@@ -1,0 +1,36 @@
+{
+  "name": "joi-route-to-swagger",
+  "version": "0.1.0",
+  "description": "Convert joi route definition to swagger doc json format",
+  "main": "index.js",
+  "scripts": {
+    "test": "node ./test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kenspirit/joi-route-to-swagger.git"
+  },
+  "keywords": [
+    "joi",
+    "route",
+    "swagger",
+    "api",
+    "docs"
+  ],
+  "author": "Ken Chen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kenspirit/joi-route-to-swagger/issues"
+  },
+  "homepage": "https://github.com/kenspirit/joi-route-to-swagger#readme",
+  "dependencies": {
+    "joi-to-json-schema": "^3.0.0",
+    "lodash": "^4.17.4"
+  },
+  "devDependencies": {
+    "bluebird": "^3.5.0",
+    "glob": "^7.1.2",
+    "joi": "^11.1.1",
+    "jsonschema": "^1.2.0"
+  }
+}
