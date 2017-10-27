@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/kenspirit/joi-route-to-swagger#readme",
   "dependencies": {
-    "joi-to-json-schema": "^3.0.0",
+    "joi-to-json-schema": "^3.2.0",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
