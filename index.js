@@ -73,14 +73,17 @@ function addRequestQueryParams(route, validators) {
   if (validators && validators.query) {
     const queryParams = joi2json(validators.query);
     _.forEach(queryParams.properties, (value, field) => {
-      const description = value.description ? value.description : '';
+      let description = value.description ? value.description : '';
       const example = value.examples && value.examples.length > 0 ? value.examples[0] : undefined;
+      if (example) {
+        description += ` Example: ${example}`;
+      }
 
+      // example is removed because it's not supported in swagger v2 schema
       route.parameters.push({
         name: field,
         in: 'query',
         description,
-        example,
         required: (queryParams.required || []).indexOf(field) > -1,
         type: value.type,
         maximum: value.maximum,

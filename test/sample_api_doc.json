@@ -27,6 +27,13 @@
         ],
         "parameters": [
           {
+            "name": "productId",
+            "in": "query",
+            "description": " Example: 621",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "sort",
             "in": "query",
             "description": "",
@@ -65,13 +72,6 @@
             "description": "",
             "required": false,
             "type": "integer"
-          },
-          {
-            "name": "productId",
-            "in": "query",
-            "description": "",
-            "required": false,
-            "type": "string"
           }
         ],
         "responses": {

@@ -39,9 +39,13 @@ function buildDocsBasedOnRoutes(pathPrefix, routesPathGlob) {
 
 buildDocsBasedOnRoutes('/api', './fixtures/*-routes\.js')
   .then((swagerDocJson) => {
-    v.validate(swagerDocJson, swaggerSchema);
-
     fs.writeFileSync('./test/sample_api_doc.json', JSON.stringify(swagerDocJson, null, 2));
+    const result = v.validate(swagerDocJson, swaggerSchema);
+    if (result.errors && result.errors.length > 0) {
+      console.log(result.errors);
+    }
+
+    console.log('Sample api doc is written to ./test/sample_api_doc.json successfully.');
     return process.exit(0);
   })
   .catch((e) => {

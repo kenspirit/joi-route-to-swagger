@@ -17,11 +17,11 @@ const moduleRouteDef = {
       action: dummyMiddlewareA,
       validators: {
         query: joi.object().keys({
+          productId: joi.string().example('621'),
           sort: joi.string().valid('createdAt', 'updatedAt').default('createdAt'),
           direction: joi.string().valid('desc', 'asc').default('desc'),
           limit: joi.number().integer().max(100).default(100),
-          page: joi.number().integer(),
-          productId: joi.string()
+          page: joi.number().integer()
         }).with('sort', 'direction')
       },
       responseExamples: [

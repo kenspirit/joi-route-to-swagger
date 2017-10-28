@@ -53,11 +53,11 @@ const moduleRouteDef = {
       action: dummyMiddlewareA,
       validators: {
         query: joi.object().keys({
+          productId: joi.string().example('621'),
           sort: joi.string().valid('createdAt', 'updatedAt').default('createdAt'),
           direction: joi.string().valid('desc', 'asc').default('desc'),
           limit: joi.number().integer().max(100).default(100),
-          page: joi.number().integer(),
-          productId: joi.string()
+          page: joi.number().integer()
         }).with('sort', 'direction')
       },
       responseExamples: [
@@ -117,7 +117,7 @@ const swaggerDocs = convert([sampleRoutes]);
 
 ## Test & Generate Sample Swagger Docs
 
-Runs below test command will:  
+Executes below test command will:  
 
 1. Converts all the routes definition file with `-routes.js` suffix in `test/fixtures/` folder to a Swagger docs JSON.  
 2. Validate the converted JSON against Swagger Schema 2.0.  
@@ -127,13 +127,20 @@ Runs below test command will:
 
 ## View Generated API Document
 
+Executes below command will startup a static server to host the sample Swagger docs locally:  
+
+http://localhost:8080/swagger-ui/index.html
+
+![Swagger Docs Sample](./Swagger-Docs-Sample.png)
+
 [Swagger UI]: https://swagger.io/swagger-ui/
 
-Finally, you should download the [Swagger UI][] to host the API routes docs for yourself.  But you can take a quick look on the effect by importing the generated JSON file in https://editor.swagger.io/ .  
+Of course, you can also download the [Swagger UI][] to host the API routes docs for yourself.  
+
+_Notes: You may find that the UI is a bit different from what you see in https://editor.swagger.io/ .  I customized it to show enumeration and default value as well.  :)_  
 
 Enjoy.  
 
-![Swagger Docs Sample](./Swagger-Docs-Sample.png)
 
 ## License
 
