@@ -129,6 +129,8 @@ Executes below test command will:
 
 Executes below command will startup a static server to host the sample Swagger docs locally:  
 
+>npm run ui
+
 http://localhost:8080/swagger-ui/index.html
 
 ![Swagger Docs Sample](./Swagger-Docs-Sample.png)
