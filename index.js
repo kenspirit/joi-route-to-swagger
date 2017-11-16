@@ -232,6 +232,7 @@ function convert(allModuleRoutes, docSkeleton) {
   docEntity.info = docEntity.info || DOC_ROOT_TEMPLATE.info;
   docEntity.host = docEntity.host || DOC_ROOT_TEMPLATE.host;
   docEntity.basePath = docEntity.basePath || DOC_ROOT_TEMPLATE.basePath;
+  docEntity.schemes = docEntity.schemes || DOC_ROOT_TEMPLATE.schemes;
   docEntity.tags = docEntity.tags || DOC_ROOT_TEMPLATE.tags;
   docEntity.paths = docEntity.paths || DOC_ROOT_TEMPLATE.paths;
   docEntity.definitions = docEntity.definitions || DOC_ROOT_TEMPLATE.definitions;
