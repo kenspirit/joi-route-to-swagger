@@ -1,12 +1,15 @@
 {
-  "basePath": "/api",
+  "servers": [
+    {
+      "url": "http://localhost/api"
+    }
+  ],
   "info": {
     "description": "Helps to CRUD hero information.",
     "version": "1.0.0",
     "title": "Hero API Docs"
   },
-  "swagger": "2.0",
-  "host": "localhost",
+  "openapi": "3.0.1",
   "tags": [
     {
       "name": "hero",
@@ -22,88 +25,98 @@
         "summary": "List",
         "description": "",
         "operationId": "dummyMiddlewareA",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "name": "productId",
             "in": "query",
             "description": " Example: 621",
             "required": false,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "sort",
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string",
-            "default": "createdAt",
-            "enum": [
-              "createdAt",
-              "updatedAt"
-            ]
+            "schema": {
+              "type": "string",
+              "default": "createdAt"
+            }
           },
           {
             "name": "direction",
             "in": "query",
             "description": "",
             "required": false,
-            "type": "string",
-            "default": "desc",
-            "enum": [
-              "desc",
-              "asc"
-            ]
+            "schema": {
+              "type": "string",
+              "default": "desc"
+            }
           },
           {
             "name": "limit",
             "in": "query",
             "description": "",
             "required": false,
-            "type": "integer",
-            "maximum": 100,
-            "default": 100
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "default": 100
+            }
           },
           {
             "name": "page",
             "in": "query",
             "description": "",
             "required": false,
-            "type": "integer"
+            "schema": {
+              "type": "integer"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "Normal Response",
-            "schema": {
-              "$ref": "#/definitions/NormalResponse"
-            },
-            "examples": {
+            "content": {
               "application/json": {
-                "err": null,
-                "data": {
-                  "records": [
-                    {
-                      "_id": "59ba1f3c2e9787247e29da9b",
-                      "updatedAt": "2017-09-14T06:18:36.786Z",
-                      "createdAt": "2017-09-14T06:18:36.786Z",
-                      "nickName": "Ken",
-                      "avatar": "",
-                      "gender": "Male"
+                "schema": {
+                  "$ref": "#/components/schemas/NormalResponse"
+                },
+                "examples": {
+                  "Normal": {
+                    "summary": "Normal Response",
+                    "value": {
+                      "err": null,
+                      "data": {
+                        "records": [
+                          {
+                            "_id": "59ba1f3c2e9787247e29da9b",
+                            "updatedAt": "2017-09-14T06:18:36.786Z",
+                            "createdAt": "2017-09-14T06:18:36.786Z",
+                            "nickName": "Ken",
+                            "avatar": "",
+                            "gender": "Male"
+                          }
+                        ],
+                        "totalCount": 1,
+                        "page": 1
+                      }
                     }
-                  ],
-                  "totalCount": 1,
-                  "page": 1
+                  }
                 }
               }
             }
           },
           "500": {
             "description": "When Server takes a nap.",
-            "schema": {
-              "$ref": "#/definitions/Error"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
@@ -115,25 +128,25 @@
         "summary": "Create",
         "description": "",
         "operationId": "dummyMiddlewareC",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Submission Data in body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dummyMiddlewareCEntity"
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "500": {
             "description": "When Server takes a nap.",
-            "schema": {
-              "$ref": "#/definitions/Error"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/dummyMiddlewareCEntity"
+              }
             }
           }
         }
@@ -147,32 +160,35 @@
         "summary": "Update",
         "description": "",
         "operationId": "dummyMiddlewareB",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "description": "id",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Submission Data in body",
-            "required": true,
             "schema": {
-              "$ref": "#/definitions/dummyMiddlewareBEntity"
+              "type": "string"
             }
           }
         ],
         "responses": {
           "500": {
             "description": "When Server takes a nap.",
-            "schema": {
-              "$ref": "#/definitions/Error"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/dummyMiddlewareBEntity"
+              }
             }
           }
         }
@@ -184,116 +200,123 @@
         "summary": "Open",
         "description": "",
         "operationId": "dummyMiddlewareD",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "description": "id",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "500": {
             "description": "When Server takes a nap.",
-            "schema": {
-              "$ref": "#/definitions/Error"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
             }
           }
         }
       }
     }
   },
-  "definitions": {
-    "NormalResponse": {
-      "type": "object",
-      "required": [
-        "err",
-        "data"
-      ],
-      "properties": {
-        "err": {
-          "type": "null"
-        },
-        "data": {
-          "type": "object"
-        }
-      }
-    },
-    "Error": {
-      "type": "object",
-      "required": [
-        "err",
-        "data"
-      ],
-      "properties": {
-        "err": {
-          "type": "string"
-        },
-        "data": {
-          "type": "null"
-        }
-      }
-    },
-    "dummyMiddlewareCEntity": {
-      "type": "object",
-      "properties": {
-        "nickName": {
-          "type": "string",
-          "example": "鹄思乱想",
-          "description": "Hero Nickname"
-        },
-        "avatar": {
-          "type": "string",
-          "description": ""
-        },
-        "gender": {
-          "type": "string",
-          "description": ""
-        },
-        "skills": {
-          "type": "array",
-          "example": [
-            "teleport",
-            "invisible"
-          ],
-          "description": "",
-          "items": {
-            "type": "string"
+  "components": {
+    "schemas": {
+      "NormalResponse": {
+        "type": "object",
+        "required": [
+          "err",
+          "data"
+        ],
+        "properties": {
+          "err": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "object"
           }
         }
       },
-      "required": [
-        "nickName",
-        "avatar"
-      ]
-    },
-    "dummyMiddlewareBEntity": {
-      "type": "object",
-      "properties": {
-        "nickName": {
-          "type": "string",
-          "description": ""
-        },
-        "avatar": {
-          "type": "string",
-          "description": ""
-        },
-        "skills": {
-          "type": "array",
-          "description": "",
-          "items": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "err",
+          "data"
+        ],
+        "properties": {
+          "err": {
             "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "nullable": true
           }
         }
       },
-      "required": [
-        "nickName",
-        "avatar"
-      ]
+      "dummyMiddlewareCEntity": {
+        "type": "object",
+        "properties": {
+          "nickName": {
+            "type": "string",
+            "example": "鹄思乱想",
+            "description": "Hero Nickname"
+          },
+          "avatar": {
+            "type": "string",
+            "description": ""
+          },
+          "gender": {
+            "type": "string",
+            "description": ""
+          },
+          "skills": {
+            "type": "array",
+            "example": [
+              "teleport",
+              "invisible"
+            ],
+            "description": "",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "nickName",
+          "avatar"
+        ]
+      },
+      "dummyMiddlewareBEntity": {
+        "type": "object",
+        "properties": {
+          "nickName": {
+            "type": "string",
+            "description": ""
+          },
+          "avatar": {
+            "type": "string",
+            "description": ""
+          },
+          "skills": {
+            "type": "array",
+            "description": "",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "nickName",
+          "avatar"
+        ]
+      }
     }
   }
 }

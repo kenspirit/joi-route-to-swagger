@@ -6,7 +6,8 @@ const Promise = require('bluebird');
 const Validator = require('jsonschema').Validator;
 const convert = require('../index').convert;
 
-const swaggerSchema = require('./schemas/swagger-schema-2.0');
+// const swaggerSchema = require('./schemas/swagger-schema-2.0');
+const swaggerSchema = require('./schemas/openapi-3.0.json');
 const jsonSchemaDraft = require('./schemas/json-schema-draft04');
 
 const globPromise = Promise.promisify(glob);
@@ -27,7 +28,9 @@ function buildDocsBasedOnRoutes(pathPrefix, routesPathGlob) {
       });
 
       return convert(allModuleRoutes, {
-        basePath: pathPrefix,
+        servers: [{
+          url: `http://localhost${pathPrefix}`
+        }],
         info: {
           description: 'Helps to CRUD hero information.',
           version: '1.0.0',

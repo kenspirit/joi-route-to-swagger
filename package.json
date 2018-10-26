@@ -1,7 +1,7 @@
 {
   "name": "joi-route-to-swagger",
-  "version": "0.1.2",
-  "description": "Convert joi route definition to swagger doc json format",
+  "version": "0.2.0",
+  "description": "Convert joi route definition to swagger doc json format (Open API v3)",
   "main": "index.js",
   "scripts": {
     "test": "node ./test/index.js",
@@ -15,7 +15,7 @@
     "joi",
     "route",
     "swagger",
-    "api",
+    "openapi",
     "docs"
   ],
   "author": "Ken Chen",

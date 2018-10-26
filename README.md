@@ -104,9 +104,9 @@ const moduleRouteDef = {
 module.exports = moduleRouteDef;
 ```
 
-### Converting Route Definition to Swagger Docs
+### Converting Route Definition to OpenAPI
 
-Once you have defined your API routes as above, you can use this tool to convert it to Swagger docs in JSON format.
+Once you have defined your API routes as above, you can use this tool to convert it to OpenAPI in JSON format.
 
 ```javascript
 const convert = require('joi-route-to-swagger').convert;
@@ -115,25 +115,25 @@ const sampleRoutes = require('./test/fixtures/mockA-routes');
 const swaggerDocs = convert([sampleRoutes]);
 ```
 
-## Test & Generate Sample Swagger Docs
+## Test & Generate Sample OpenAPI
 
 Executes below test command will:  
 
-1. Converts all the routes definition file with `-routes.js` suffix in `test/fixtures/` folder to a Swagger docs JSON.  
-2. Validate the converted JSON against Swagger Schema 2.0.  
-3. Generate the Swagger docs JSON to a file in `test/sample_api_doc.json`.  
+1. Converts all the routes definition file with `-routes.js` suffix in `test/fixtures/` folder to a OpenAPI schema JSON.  
+2. Validate the converted JSON against [OpenAPI 3.0](https://raw.githubusercontent.com/googleapis/gnostic/master/OpenAPIv3/openapi-3.0.json).  
+3. Generate the OpenAPI JSON to a file in `test/sample_api_doc.json`.  
 
 >npm run test
 
 ## View Generated API Document
 
-Executes below command will startup a static server to host the sample Swagger docs locally:  
+Executes below command will startup a static server to host the sample OpenAPI locally:  
 
 >npm run ui
 
 http://localhost:8080/swagger-ui/index.html
 
-![Swagger Docs Sample](./Swagger-Docs-Sample.png)
+![OpenAPI Sample](./Swagger-Docs-Sample.png)
 
 [Swagger UI]: https://swagger.io/swagger-ui/
 

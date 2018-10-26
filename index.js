@@ -2,48 +2,49 @@ const _ = require('lodash');
 const joi2json = require('joi-to-json-schema');
 
 const DOC_ROOT_TEMPLATE = {
-  swagger: '2.0',
+  openapi: '3.0.1',
   info: {
     description: 'API Docs',
     version: '1.0.0',
     title: 'API Docs'
   },
-  host: 'localhost',
-  basePath: '/',
+  servers: [{
+    url: 'http://localhost/'
+  }],
   tags: [],
-  schemes: [
-    'http',
-    'https'
-  ],
-  paths: { },
-  definitions: {
-    NormalResponse: {
-      type: 'object',
-      required: [
-        'err',
-        'data'
-      ],
-      properties: {
-        err: {
-          type: 'null'
-        },
-        data: {
-          type: 'object'
+  paths: {},
+  components: {
+    schemas: {
+      NormalResponse: {
+        type: 'object',
+        required: [
+          'err',
+          'data'
+        ],
+        properties: {
+          err: {
+            type: 'string',
+            nullable: true
+          },
+          data: {
+            type: 'object'
+          }
         }
-      }
-    },
-    Error: {
-      type: 'object',
-      required: [
-        'err',
-        'data'
-      ],
-      properties: {
-        err: {
-          type: 'string'
-        },
-        data: {
-          type: 'null'
+      },
+      Error: {
+        type: 'object',
+        required: [
+          'err',
+          'data'
+        ],
+        properties: {
+          err: {
+            type: 'string'
+          },
+          data: {
+            type: 'object',
+            nullable: true
+          }
         }
       }
     }
@@ -55,19 +56,41 @@ const ROUTE_DEF_TEMPLATE = {
   summary: '',
   description: '',
   operationId: '',
-  produces: [
-    'application/json'
-  ],
   parameters: [],
   responses: {
     500: {
       description: 'When Server takes a nap.',
-      schema: {
-        $ref: '#/definitions/Error'
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/Error'
+          }
+        }
       }
     }
   }
 };
+
+function _addArrayItemsSchema(schema, joiDefinition) {
+  if (joiDefinition.type === 'array') {
+    if (joiDefinition.items) {
+      if (_.isArray(joiDefinition.items.type)) {
+        _.remove(joiDefinition.items.type, (type) => { return type === 'null' });
+        schema.items = {
+          anyOf: _.map(joiDefinition.items.type, (valueType) => {
+            const subSchema = { type: valueType };
+            if (valueType === 'array') {
+              subSchema.items = {};
+            }
+            return subSchema;
+          })
+        }
+      } else {
+        schema.items = joiDefinition.items;
+      }
+    }
+  }
+}
 
 function addRequestQueryParams(route, validators) {
   if (validators && validators.query) {
@@ -80,16 +103,20 @@ function addRequestQueryParams(route, validators) {
       }
 
       // example is removed because it's not supported in swagger v2 schema
-      route.parameters.push({
+      const schema = {
         name: field,
         in: 'query',
         description,
         required: (queryParams.required || []).indexOf(field) > -1,
-        type: value.type,
-        maximum: value.maximum,
-        default: value.default,
-        enum: value.enum
-      });
+        schema: {
+          type: value.type,
+          maximum: value.maximum,
+          default: value.default,
+          enum: value.enum
+        },
+      };
+      _addArrayItemsSchema(schema, value);
+      route.parameters.push(schema);
     });
   }
 }
@@ -112,34 +139,34 @@ function buildEntityDefinition(docEntity, entityName, entityDef) {
       description
     };
     if (value.type === 'array') {
-      entity.properties[field].items = value.items;
+      _addArrayItemsSchema(entity.properties[field], value);
     }
     if (value.type === 'object') {
       entity.properties[field].schema = {
-        $ref: `#/definitions/${field}Entity`
+        $ref: `#/components/schemas/${field}Entity`
       };
       buildEntityDefinition(docEntity, `${field}Entity`, value);
     }
   });
 
-  docEntity.definitions[entityName] = entity;
+  docEntity.components.schemas[entityName] = entity;
 
   return entity;
 }
 
-function addRequestBodyParams(docEntity, route, validators, actionName) {
+function addRequestBodyParams(docEntity, swaggerReq, validators, actionName) {
   if (validators && validators.body) {
     const entityName = `${_.camelCase(actionName)}Entity`;
 
-    route.parameters.push({
-      name: 'body',
-      in: 'body',
-      description: 'Submission Data in body',
-      required: true,
-      schema: {
-        $ref: `#/definitions/${entityName}`
+    swaggerReq.requestBody = {
+      content: {
+        'application/json': {
+          schema: {
+            $ref: `#/components/schemas/${entityName}`
+          }
+        }
       }
-    });
+    };
 
     const queryParams = joi2json(validators.body);
 
@@ -154,7 +181,9 @@ function addRequestPathParams(route, pathParams) {
       in: 'path',
       description: param,
       required: true,
-      type: 'string'
+      schema: {
+        type: 'string'
+      }
     });
   });
 }
@@ -163,11 +192,18 @@ function addResponseExample(routeDef, route) {
   _.forEach(routeDef.responseExamples, (example) => {
     route.responses[example.code] = {
       description: example.description || 'Normal Response',
-      schema: {
-        $ref: '#/definitions/NormalResponse'
-      },
-      examples: {
-        'application/json': example.data
+      content: {
+        'application/json': {
+          schema: {
+            $ref: '#/components/schemas/NormalResponse'
+          },
+          examples: {
+            'Normal': {
+              summary: 'Normal Response',
+              value: example.data
+            }
+          }
+        }
       }
     };
   });
@@ -228,14 +264,12 @@ function buildModuleRoutes(docEntity, moduleRoutes) {
 function convert(allModuleRoutes, docSkeleton) {
   const docEntity = docSkeleton || DOC_ROOT_TEMPLATE;
 
-  docEntity.swagger = '2.0';
+  docEntity.openapi = docEntity.openapi || DOC_ROOT_TEMPLATE.openapi;
   docEntity.info = docEntity.info || DOC_ROOT_TEMPLATE.info;
-  docEntity.host = docEntity.host || DOC_ROOT_TEMPLATE.host;
-  docEntity.basePath = docEntity.basePath || DOC_ROOT_TEMPLATE.basePath;
-  docEntity.schemes = docEntity.schemes || DOC_ROOT_TEMPLATE.schemes;
+  docEntity.servers = docEntity.servers || DOC_ROOT_TEMPLATE.servers;
   docEntity.tags = docEntity.tags || DOC_ROOT_TEMPLATE.tags;
   docEntity.paths = docEntity.paths || DOC_ROOT_TEMPLATE.paths;
-  docEntity.definitions = docEntity.definitions || DOC_ROOT_TEMPLATE.definitions;
+  docEntity.components = DOC_ROOT_TEMPLATE.components;
 
   _.forEach(allModuleRoutes, (moduleRoutes) => {
     buildModuleRoutes(docEntity, moduleRoutes);
