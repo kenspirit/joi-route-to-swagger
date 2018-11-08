@@ -142,9 +142,7 @@ function buildEntityDefinition(docEntity, entityName, entityDef) {
       _addArrayItemsSchema(entity.properties[field], value);
     }
     if (value.type === 'object') {
-      entity.properties[field].schema = {
-        $ref: `#/components/schemas/${field}Entity`
-      };
+      entity.properties[field]["$ref"] = `#/definitions/${field}Entity`;
       buildEntityDefinition(docEntity, `${field}Entity`, value);
     }
   });
