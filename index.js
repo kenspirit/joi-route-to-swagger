@@ -115,7 +115,7 @@ function addRequestQueryParams(route, validators) {
           enum: value.enum
         },
       };
-      _addArrayItemsSchema(schema, value);
+      _addArrayItemsSchema(schema.schema, value);
       route.parameters.push(schema);
     });
   }
@@ -142,9 +142,9 @@ function buildEntityDefinition(docEntity, entityName, entityDef) {
       _addArrayItemsSchema(entity.properties[field], value);
     }
     if (value.type === 'object') {
-      entity.properties[field].schema = {
-        $ref: `#/components/schemas/${field}Entity`
-      };
+      entity.properties[field].allOf = [{
+        "$ref": `#/components/schemas/${field}Entity`
+      }];
       buildEntityDefinition(docEntity, `${field}Entity`, value);
     }
   });
