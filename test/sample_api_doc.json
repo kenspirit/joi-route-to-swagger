@@ -31,6 +31,7 @@
             "in": "query",
             "description": " Example: 621",
             "required": false,
+            "example": "621",
             "schema": {
               "type": "string"
             }
@@ -82,29 +83,83 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NormalResponse"
-                },
-                "examples": {
-                  "Normal": {
-                    "summary": "Normal Response",
-                    "value": {
-                      "err": null,
-                      "data": {
-                        "records": [
-                          {
-                            "_id": "59ba1f3c2e9787247e29da9b",
-                            "updatedAt": "2017-09-14T06:18:36.786Z",
-                            "createdAt": "2017-09-14T06:18:36.786Z",
-                            "nickName": "Ken",
-                            "avatar": "",
-                            "gender": "Male"
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                      "example": "10000000",
+                      "description": "Status Code"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "records": {
+                          "type": "array",
+                          "description": "",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "_id": {
+                                "description": "Unique id of hero",
+                                "example": "59ba1f3c2e9787247e29da9b",
+                                "type": "string"
+                              },
+                              "updatedAt": {
+                                "description": "Data creation time",
+                                "example": "2017-09-14T06:18:36.786Z",
+                                "type": "string"
+                              },
+                              "createdAt": {
+                                "description": "Data last update time",
+                                "example": "2017-09-14T06:18:36.786Z",
+                                "type": "string"
+                              },
+                              "nickName": {
+                                "description": "Nick name",
+                                "example": "Ken",
+                                "type": "string"
+                              },
+                              "gender": {
+                                "description": "Gender",
+                                "example": "Male",
+                                "type": "string"
+                              },
+                              "avatar": {
+                                "description": "Hero avatar",
+                                "type": "string"
+                              }
+                            },
+                            "additionalProperties": false,
+                            "patterns": [],
+                            "required": [
+                              "_id",
+                              "updatedAt",
+                              "createdAt",
+                              "nickName",
+                              "gender"
+                            ]
                           }
-                        ],
-                        "totalCount": 1,
-                        "page": 1
-                      }
+                        },
+                        "totalCount": {
+                          "type": "integer",
+                          "example": 2,
+                          "description": "Total number of records"
+                        },
+                        "page": {
+                          "type": "integer",
+                          "example": 1,
+                          "description": "Page Number"
+                        }
+                      },
+                      "required": [
+                        "totalCount",
+                        "page"
+                      ]
                     }
-                  }
+                  },
+                  "required": [
+                    "code"
+                  ]
                 }
               }
             }
@@ -145,7 +200,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/dummyMiddlewareCEntity"
+                "$ref": "#/components/schemas/HeroDummymiddlewarecEntity"
               }
             }
           }
@@ -187,7 +242,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/dummyMiddlewareBEntity"
+                "$ref": "#/components/schemas/HeroDummymiddlewarebEntity"
               }
             }
           }
@@ -228,39 +283,22 @@
   },
   "components": {
     "schemas": {
-      "NormalResponse": {
-        "type": "object",
-        "required": [
-          "err",
-          "data"
-        ],
-        "properties": {
-          "err": {
-            "type": "string",
-            "nullable": true
-          },
-          "data": {
-            "type": "object"
-          }
-        }
-      },
       "Error": {
         "type": "object",
         "required": [
-          "err",
-          "data"
+          "code",
+          "err"
         ],
         "properties": {
-          "err": {
+          "code": {
             "type": "string"
           },
-          "data": {
-            "type": "object",
-            "nullable": true
+          "err": {
+            "type": "string"
           }
         }
       },
-      "dummyMiddlewareCEntity": {
+      "HeroDummymiddlewarecEntity": {
         "type": "object",
         "properties": {
           "nickName": {
@@ -293,7 +331,7 @@
           "avatar"
         ]
       },
-      "dummyMiddlewareBEntity": {
+      "HeroDummymiddlewarebEntity": {
         "type": "object",
         "properties": {
           "nickName": {

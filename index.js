@@ -15,35 +15,18 @@ const DOC_ROOT_TEMPLATE = {
   paths: {},
   components: {
     schemas: {
-      NormalResponse: {
-        type: 'object',
-        required: [
-          'err',
-          'data'
-        ],
-        properties: {
-          err: {
-            type: 'string',
-            nullable: true
-          },
-          data: {
-            type: 'object'
-          }
-        }
-      },
       Error: {
         type: 'object',
         required: [
-          'err',
-          'data'
+          'code',
+          'err'
         ],
         properties: {
-          err: {
+          code: {
             type: 'string'
           },
-          data: {
-            type: 'object',
-            nullable: true
+          err: {
+            type: 'string'
           }
         }
       }
@@ -86,6 +69,11 @@ function _addArrayItemsSchema(schema, joiDefinition) {
           })
         }
       } else {
+        _.forEach(joiDefinition.items.properties, (item) => {
+          if (item.examples && item.example) {
+            delete item.examples;
+          }
+        })
         schema.items = joiDefinition.items;
       }
     } else {
@@ -101,7 +89,7 @@ function addRequestQueryParams(route, validators) {
       let description = value.description ? value.description : '';
       const example = value.examples && value.examples.length > 0 ? value.examples[0] : undefined;
       if (example) {
-        description += `<br><br>Example: ${example}`;
+        description += ` Example: ${example}`;
       }
 
       // example is removed because it's not supported in swagger v2 schema
@@ -131,7 +119,7 @@ function addRequestHeaderParams(route, validators) {
       let description = value.description ? value.description : '';
       const example = value.examples && value.examples.length > 0 ? value.examples[0] : undefined;
       if (example) {
-        description += `<br><br>Example: ${example}`;
+        description += ` Example: ${example}`;
       }
 
       // example is removed because it's not supported in swagger v2 schema
@@ -152,6 +140,35 @@ function addRequestHeaderParams(route, validators) {
       route.parameters.push(schema);
     });
   }
+}
+
+function buildEmbeddedSchema(entityDef) {
+  const schema = {
+    type: 'object',
+    properties: {},
+    required: []
+  };
+
+  schema.required = entityDef.required;
+
+  _.forEach(entityDef.properties, (value, field) => {
+    const description = value.description ? value.description : '';
+    const example = value.examples && value.examples.length > 0 ? value.examples[0] : undefined;
+
+    schema.properties[field] = {
+      type: value.type,
+      example,
+      description
+    };
+    if (value.type === 'array') {
+      _addArrayItemsSchema(schema.properties[field], value);
+    }
+    if (value.type === 'object') {
+      schema.properties[field] = buildEmbeddedSchema(value);
+    }
+  });
+
+  return schema;
 }
 
 function buildEntityDefinition(docEntity, entityName, entityDef) {
@@ -224,19 +241,17 @@ function addRequestPathParams(route, pathParams) {
 
 function addResponseExample(routeDef, route) {
   _.forEach(routeDef.responseExamples, (example) => {
+    if (!example.schema) {
+      return;
+    }
+
+    const resSchema = joi2json(example.schema);
+
     route.responses[example.code] = {
       description: example.description || 'Normal Response',
       content: {
         'application/json': {
-          schema: {
-            $ref: '#/components/schemas/NormalResponse'
-          },
-          examples: {
-            'Normal': {
-              summary: 'Normal Response',
-              value: example.data
-            }
-          }
+          schema: buildEmbeddedSchema(resSchema)
         }
       }
     };

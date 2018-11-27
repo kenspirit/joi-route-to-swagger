@@ -27,23 +27,21 @@ const moduleRouteDef = {
       responseExamples: [
         {
           code: 200,
-          data: {
-            err: null,
-            data: {
-              records: [
-                {
-                  _id: '59ba1f3c2e9787247e29da9b',
-                  updatedAt: '2017-09-14T06:18:36.786Z',
-                  createdAt: '2017-09-14T06:18:36.786Z',
-                  nickName: 'Ken',
-                  avatar: '',
-                  gender: 'Male'
-                }
-              ],
-              totalCount: 1,
-              page: 1
-            }
-          }
+          schema: joi.object().keys({
+            code: joi.string().required().example('10000000').description('Status Code'),
+            data: joi.object().keys({
+              records: joi.array().items(joi.object().keys({
+                _id: joi.string().example('59ba1f3c2e9787247e29da9b').description('Unique id of hero').required(),
+                updatedAt: joi.string().example('2017-09-14T06:18:36.786Z').description('Data creation time').required(),
+                createdAt: joi.string().example('2017-09-14T06:18:36.786Z').description('Data last update time').required(),
+                nickName: joi.string().example('Ken').description('Nick name').required(),
+                gender: joi.string().example('Male').description('Gender').required(),
+                avatar: joi.string().description('Hero avatar'),
+              })),
+              totalCount: joi.number().integer().required().example(2).description('Total number of records'),
+              page: joi.number().integer().required().example(1).description('Page Number')
+            })
+          })
         }
       ]
     },
