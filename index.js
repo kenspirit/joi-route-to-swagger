@@ -88,6 +88,8 @@ function _addArrayItemsSchema(schema, joiDefinition) {
       } else {
         schema.items = joiDefinition.items;
       }
+    } else {
+      schema.items = [];
     }
   }
 }
@@ -99,7 +101,7 @@ function addRequestQueryParams(route, validators) {
       let description = value.description ? value.description : '';
       const example = value.examples && value.examples.length > 0 ? value.examples[0] : undefined;
       if (example) {
-        description += ` Example: ${example}`;
+        description += `<br><br>Example: ${example}`;
       }
 
       // example is removed because it's not supported in swagger v2 schema
@@ -108,6 +110,7 @@ function addRequestQueryParams(route, validators) {
         in: 'query',
         description,
         required: (queryParams.required || []).indexOf(field) > -1,
+        example,
         schema: {
           type: value.type,
           maximum: value.maximum,
@@ -116,6 +119,36 @@ function addRequestQueryParams(route, validators) {
         },
       };
       _addArrayItemsSchema(schema.schema, value);
+      route.parameters.push(schema);
+    });
+  }
+}
+
+function addRequestHeaderParams(route, validators) {
+  if (validators && validators.header) {
+    const headers = joi2json(validators.header);
+    _.forEach(headers.properties, (value, field) => {
+      let description = value.description ? value.description : '';
+      const example = value.examples && value.examples.length > 0 ? value.examples[0] : undefined;
+      if (example) {
+        description += `<br><br>Example: ${example}`;
+      }
+
+      // example is removed because it's not supported in swagger v2 schema
+      const schema = {
+        name: field,
+        in: 'header',
+        description,
+        required: (headers.required || []).indexOf(field) > -1,
+        example,
+        schema: {
+          type: value.type,
+          maximum: value.maximum,
+          default: value.default,
+          enum: value.enum
+        },
+      };
+
       route.parameters.push(schema);
     });
   }
@@ -142,10 +175,11 @@ function buildEntityDefinition(docEntity, entityName, entityDef) {
       _addArrayItemsSchema(entity.properties[field], value);
     }
     if (value.type === 'object') {
+      const subEntityName = `${entityName}${_.capitalize(field)}Entity`;
       entity.properties[field].allOf = [{
-        "$ref": `#/components/schemas/${field}Entity`
+        $ref: `#/components/schemas/${subEntityName}`
       }];
-      buildEntityDefinition(docEntity, `${field}Entity`, value);
+      buildEntityDefinition(docEntity, `${subEntityName}`, value);
     }
   });
 
@@ -154,9 +188,9 @@ function buildEntityDefinition(docEntity, entityName, entityDef) {
   return entity;
 }
 
-function addRequestBodyParams(docEntity, swaggerReq, validators, actionName) {
+function addRequestBodyParams(moduleId, docEntity, swaggerReq, validators, actionName) {
   if (validators && validators.body) {
-    const entityName = `${_.camelCase(actionName)}Entity`;
+    const entityName = `${_.capitalize(moduleId)}${_.capitalize(actionName)}Entity`;
 
     swaggerReq.requestBody = {
       content: {
@@ -243,7 +277,8 @@ function buildSwaggerRequest(docEntity, moduleId, basePath, routeDef) {
 
   const validators = routeDef.validators;
   addRequestQueryParams(swaggerReq, validators);
-  addRequestBodyParams(docEntity, swaggerReq, validators, actionName);
+  addRequestHeaderParams(swaggerReq, validators);
+  addRequestBodyParams(moduleId, docEntity, swaggerReq, validators, actionName);
 
   addResponseExample(routeDef, swaggerReq);
 }
