@@ -225,17 +225,32 @@ function addRequestBodyParams(moduleId, docEntity, swaggerReq, validators, actio
   }
 }
 
-function addRequestPathParams(route, pathParams) {
+function addRequestPathParams(route, pathParams, validators) {
+  let pathParamSchema;
+  if (validators && validators.path) {
+    pathParamSchema = joi2json(validators.path);
+  }
+
   _.forEach(pathParams, (param) => {
-    route.parameters.push({
+    const paramSchema = _.get(pathParamSchema, `properties.${param}`);
+    const schema = {
       name: param,
       in: 'path',
-      description: param,
       required: true,
       schema: {
         type: 'string'
       }
-    });
+    };
+
+    if (paramSchema) {
+      schema.description = paramSchema.description || '';
+      const example = paramSchema.examples && paramSchema.examples.length > 0 ? paramSchema.examples[0] : undefined;
+      if (example) {
+        schema.description += ` Example: ${example}`;
+      }
+      schema.example = example;
+    }
+    route.parameters.push(schema);
   });
 }
 
@@ -288,9 +303,8 @@ function buildSwaggerRequest(docEntity, moduleId, basePath, routeDef) {
 
   routePath[routeDef.method] = swaggerReq;
 
-  addRequestPathParams(swaggerReq, pathParams);
-
   const validators = routeDef.validators;
+  addRequestPathParams(swaggerReq, pathParams, validators);
   addRequestQueryParams(swaggerReq, validators);
   addRequestHeaderParams(swaggerReq, validators);
   addRequestBodyParams(moduleId, docEntity, swaggerReq, validators, actionName);
