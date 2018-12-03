@@ -74,10 +74,10 @@ function _addArrayItemsSchema(schema, joiDefinition) {
             delete item.examples;
           }
         })
-        schema.items = joiDefinition.items;
+        schema.items = _.omit(joiDefinition.items, ['patterns']);
       }
     } else {
-      schema.items = [];
+      schema.items = {};
     }
   }
 }
