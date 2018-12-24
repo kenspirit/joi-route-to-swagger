@@ -73,6 +73,9 @@ function _addArrayItemsSchema(schema, joiDefinition) {
           if (item.examples && item.example) {
             delete item.examples;
           }
+          if (item.type === 'array') {
+            _addArrayItemsSchema(item, item);
+          }
         })
         schema.items = _.omit(joiDefinition.items, ['patterns']);
       }
