@@ -189,8 +189,11 @@ function buildEntityDefinition(docEntity, entityName, entityDef) {
     entity.properties[field] = {
       type: value.type,
       example,
-      description
+      description,
     };
+    if (value.type === 'string' && value.contentEncoding) {
+      entity.properties[field].format = value.contentEncoding;
+    }
     if (value.type === 'array') {
       _addArrayItemsSchema(entity.properties[field], value);
     }
@@ -212,19 +215,27 @@ function addRequestBodyParams(moduleId, docEntity, swaggerReq, validators, actio
   if (validators && validators.body) {
     const entityName = `${_.capitalize(moduleId)}${_.capitalize(actionName)}Entity`;
 
+    const queryParams = joi2json(validators.body);
+
+    const entity = buildEntityDefinition(docEntity, entityName, queryParams);
+    let contentType = 'application/json';
+    const anyBinaryField = _.some(validators.body.describe().children, (fieldDefn) => {
+      return fieldDefn.type === 'binary';
+    });
+
+    if (anyBinaryField) {
+      contentType = 'multipart/form-data';
+    }
+
     swaggerReq.requestBody = {
       content: {
-        'application/json': {
+        [contentType]: {
           schema: {
             $ref: `#/components/schemas/${entityName}`
           }
         }
       }
     };
-
-    const queryParams = joi2json(validators.body);
-
-    buildEntityDefinition(docEntity, entityName, queryParams);
   }
 }
 
