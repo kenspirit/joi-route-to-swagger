@@ -188,11 +188,13 @@ function buildEntityDefinition(docEntity, entityName, entityDef) {
 
     entity.properties[field] = {
       type: value.type,
-      example,
       description,
     };
-    if (value.type === 'string' && value.contentEncoding) {
-      entity.properties[field].format = value.contentEncoding;
+    if (example) {
+      entity.properties[field].example = example;
+    }
+    if (value.type === 'string' && (value.contentEncoding || value.format)) {
+      entity.properties[field].format = value.contentEncoding || value.format;
     }
     if (value.type === 'array') {
       _addArrayItemsSchema(entity.properties[field], value);
@@ -211,16 +213,27 @@ function buildEntityDefinition(docEntity, entityName, entityDef) {
   return entity;
 }
 
+function binaryStringTransformer(jsonResult, joiSchema) {
+  if (jsonResult.type === 'string') {
+    const joiDesc = joiSchema.describe();
+    if (joiDesc.meta && joiDesc.meta.length > 0 && joiDesc.meta[0].format) {
+      jsonResult.format = joiDesc.meta[0].format;
+    }
+  }
+
+  return jsonResult;
+}
+
 function addRequestBodyParams(moduleId, docEntity, swaggerReq, validators, actionName) {
   if (validators && validators.body) {
     const entityName = `${_.capitalize(moduleId)}${_.capitalize(actionName)}Entity`;
 
-    const queryParams = joi2json(validators.body);
+    const queryParams = joi2json(validators.body, binaryStringTransformer);
 
     const entity = buildEntityDefinition(docEntity, entityName, queryParams);
     let contentType = 'application/json';
-    const anyBinaryField = _.some(validators.body.describe().children, (fieldDefn) => {
-      return fieldDefn.type === 'binary';
+    const anyBinaryField = _.some(entity.properties, (fieldDefn) => {
+      return fieldDefn.format === 'binary';
     });
 
     if (anyBinaryField) {
