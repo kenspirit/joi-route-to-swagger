@@ -56,7 +56,8 @@ const moduleRouteDef = {
           nickName: joi.string().required().example('鹄思乱想').description('Hero Nickname'),
           avatar: joi.string().required(),
           gender: joi.string().valid('Male', 'Female', ''),
-          skills: joi.array().items(joi.string()).example(['teleport', 'invisible'])
+          skills: joi.array().items(joi.string()).example(['teleport', 'invisible']),
+          certificate: joi.binary()
         })
       }
     },

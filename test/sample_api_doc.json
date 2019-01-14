@@ -130,7 +130,6 @@
                               }
                             },
                             "additionalProperties": false,
-                            "patterns": [],
                             "required": [
                               "_id",
                               "updatedAt",
@@ -198,7 +197,7 @@
         },
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/HeroDummymiddlewarecEntity"
               }
@@ -219,7 +218,6 @@
           {
             "name": "id",
             "in": "path",
-            "description": "id",
             "required": true,
             "schema": {
               "type": "string"
@@ -259,7 +257,6 @@
           {
             "name": "id",
             "in": "path",
-            "description": "id",
             "required": true,
             "schema": {
               "type": "string"
@@ -303,8 +300,8 @@
         "properties": {
           "nickName": {
             "type": "string",
-            "example": "鹄思乱想",
-            "description": "Hero Nickname"
+            "description": "Hero Nickname",
+            "example": "鹄思乱想"
           },
           "avatar": {
             "type": "string",
@@ -316,14 +313,19 @@
           },
           "skills": {
             "type": "array",
+            "description": "",
             "example": [
               "teleport",
               "invisible"
             ],
-            "description": "",
             "items": {
               "type": "string"
             }
+          },
+          "certificate": {
+            "type": "string",
+            "description": "",
+            "format": "binary"
           }
         },
         "required": [
