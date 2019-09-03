@@ -43,7 +43,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "createdAt"
+              "default": "createdAt",
+              "enum": [
+                "createdAt",
+                "updatedAt"
+              ]
             }
           },
           {
@@ -53,7 +57,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "desc"
+              "default": "desc",
+              "enum": [
+                "desc",
+                "asc"
+              ]
             }
           },
           {
