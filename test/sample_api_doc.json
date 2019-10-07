@@ -24,7 +24,6 @@
         ],
         "summary": "List",
         "description": "",
-        "operationId": "dummyMiddlewareA",
         "parameters": [
           {
             "name": "productId",
@@ -189,7 +188,6 @@
         ],
         "summary": "Create",
         "description": "",
-        "operationId": "dummyMiddlewareC",
         "parameters": [],
         "responses": {
           "500": {
@@ -221,7 +219,6 @@
         ],
         "summary": "Update",
         "description": "",
-        "operationId": "dummyMiddlewareB",
         "parameters": [
           {
             "name": "id",
@@ -260,7 +257,6 @@
         ],
         "summary": "Open",
         "description": "",
-        "operationId": "dummyMiddlewareD",
         "parameters": [
           {
             "name": "id",

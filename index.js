@@ -38,7 +38,6 @@ const ROUTE_DEF_TEMPLATE = {
   tags: [],
   summary: '',
   description: '',
-  operationId: '',
   parameters: [],
   responses: {
     500: {
@@ -69,12 +68,16 @@ function _addArrayItemsSchema(schema, joiDefinition) {
           })
         }
       } else {
-        _.forEach(joiDefinition.items.properties, (item) => {
+        _.forEach(joiDefinition.items.properties, (item, field) => {
           if (item.examples && item.example) {
             delete item.examples;
           }
+
           if (item.type === 'array') {
             _addArrayItemsSchema(item, item);
+          }
+          if (item.type === 'object') {
+            joiDefinition.items.properties[field] = buildEmbeddedSchema(item);
           }
         })
         schema.items = _.omit(joiDefinition.items, ['patterns']);
@@ -326,7 +329,6 @@ function buildSwaggerRequest(docEntity, moduleId, basePath, routeDef) {
   swaggerReq.tags.push(moduleId);
   swaggerReq.summary = routeDef.summary;
   swaggerReq.description = routeDef.description;
-  swaggerReq.operationId = actionName;
 
   routePath[routeDef.method] = swaggerReq;
 
