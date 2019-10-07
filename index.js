@@ -164,6 +164,7 @@ function buildEmbeddedSchema(entityDef) {
     schema.properties[field] = {
       type: value.type,
       example,
+      default: value.default,
       description
     };
     if (value.type === 'array') {
