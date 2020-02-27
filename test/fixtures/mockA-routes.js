@@ -1,4 +1,5 @@
-const joi = require('joi');
+/* eslint newline-per-chained-call: "off" */
+const joi = require('joi')
 
 function dummyMiddlewareA() { }
 function dummyMiddlewareB() { }
@@ -17,11 +18,11 @@ const moduleRouteDef = {
       action: dummyMiddlewareA,
       validators: {
         query: joi.object().keys({
-          productId: joi.string().example('621'),
-          sort: joi.string().valid('createdAt', 'updatedAt').default('createdAt'),
+          heroId: joi.string().example('621').description('Hero ID'),
+          sort: joi.string().valid('createdAt', 'updatedAt').allow('', null).default('createdAt'),
           direction: joi.string().valid('desc', 'asc').default('desc'),
-          limit: joi.number().integer().max(100).default(100),
-          page: joi.number().integer()
+          limit: joi.number().integer().min(1).max(100).default(100).multiple(10),
+          page: joi.number().integer().positive().greater(0).less(10)
         }).with('sort', 'direction')
       },
       responseExamples: [
@@ -36,7 +37,7 @@ const moduleRouteDef = {
                 createdAt: joi.string().example('2017-09-14T06:18:36.786Z').description('Data last update time').required(),
                 nickName: joi.string().example('Ken').description('Nick name').required(),
                 gender: joi.string().example('Male').description('Gender').required(),
-                avatar: joi.string().description('Hero avatar'),
+                avatar: joi.string().description('Hero avatar')
               })),
               totalCount: joi.number().integer().required().example(2).description('Total number of records'),
               page: joi.number().integer().required().example(1).description('Page Number')
@@ -53,12 +54,25 @@ const moduleRouteDef = {
       action: [dummyMiddlewareB, dummyMiddlewareC],
       validators: {
         body: joi.object().keys({
-          nickName: joi.string().required().example('鹄思乱想').description('Hero Nickname'),
-          avatar: joi.string().required(),
+          nickName: joi.string().required().example('鹄思乱想').description('Hero Nickname').min(3).max(20).regex(/^[a-z]+$/, { name: 'alpha', invert: true }),
+          avatar: joi.string().required().uri(),
+          icon: joi.string().meta({ contentMediaType: 'image/png' }),
+          email: joi.string().email(),
+          ip: joi.string().ip({ version: ['ipv4', 'ipv6'] }),
+          hostname: joi.string().hostname().insensitive(),
           gender: joi.string().valid('Male', 'Female', ''),
-          skills: joi.array().items(joi.string()).example(['teleport', 'invisible']),
-          certificate: joi.binary()
-        })
+          height: joi.number().precision(2),
+          birthday: joi.date().iso(),
+          birthTime: joi.date().timestamp('unix'),
+          skills: joi.array().items(joi.alternatives(
+            joi.string(),
+            joi.object().keys({
+              name: joi.string().example('teleport').alphanum().description('Skill Name').lowercase(),
+              level: joi.number().integer().example(1).description('Skill Level')
+            })
+          )).min(1).max(3).unique().description('Skills'),
+          retired: joi.boolean().truthy('yes').falsy('no').insensitive(false)
+        }).unknown(true).description('Hero profile')
       }
     },
     {
@@ -69,10 +83,20 @@ const moduleRouteDef = {
       action: dummyMiddlewareB,
       validators: {
         body: joi.object().keys({
-          nickName: joi.string().required(),
-          avatar: joi.string().required(),
-          skills: joi.array().items(joi.string())
-        })
+          avatar: joi.string().required().uri(),
+          icon: joi.string().meta({ contentMediaType: 'image/png' }),
+          email: joi.string().email(),
+          height: joi.number().precision(2),
+          skills: joi.array().items(joi.alternatives(
+            joi.string(),
+            joi.object().keys({
+              name: joi.string().example('teleport').alphanum().description('Skill Name').lowercase(),
+              level: joi.number().integer().example(1).description('Skill Level')
+            })
+          )).min(1).max(3).unique().description('Skills'),
+          retired: joi.boolean().truthy('yes').falsy('no').insensitive(false),
+          certificate: joi.binary().encoding('base64')
+        }).unknown(true).description('Hero profile')
       }
     },
     {
@@ -80,9 +104,14 @@ const moduleRouteDef = {
       path: '/:id',
       summary: 'Open',
       description: '',
-      action: [dummyMiddlewareB, dummyMiddlewareD]
+      action: [dummyMiddlewareB, dummyMiddlewareD],
+      validators: {
+        path: joi.object().keys({
+          id: joi.number().required().description('Hero Id').example(1)
+        })
+      }
     }
   ]
-};
+}
 
-module.exports = moduleRouteDef;
+module.exports = moduleRouteDef

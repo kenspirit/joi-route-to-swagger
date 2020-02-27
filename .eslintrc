@@ -1,6 +1,10 @@
 {
   "globals": {
   },
+  "ignorePatterns": [
+    "test/swagger-ui/",
+    "node_modules/"
+  ],
   "rules": {
     "no-restricted-syntax": 0,
     "guard-for-in": 0,
@@ -34,8 +38,8 @@
       "varsIgnorePattern": "^_"
     }],
     "semi": [
-      2,
-      "always"
+      "error",
+      "never"
     ],
     "no-console" : 0
   },
@@ -45,6 +49,5 @@
     "mocha" : true
   },
   "plugins": [
-  ],
-  "extends": "airbnb-base"
+  ]
 }

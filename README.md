@@ -1,26 +1,28 @@
 # joi-route-to-swagger
 
+_[Update]: Remove the dependency of `joi-to-json-schema` but using `joi.describe` instead.  Do test before upgrade._
+
 ## Philosophy
 
-Most programmers are not so willing to write documentations.  Also, the fact is that documentation is easily rotted as time goes by with changing requirement.  
+Most programmers are not so willing to write documentations.  Also, the fact is that documentation is easily rotted as time goes by with changing requirement.
 
 [Wiki]: https://en.wikipedia.org/wiki/Self-documenting_code
 [article]: https://www.martinfowler.com/bliki/CodeAsDocumentation.html
 
-How to maintain documentation is a long-lasting problem in software engineering.  Hence, there raises a perspective that our written code should be self-documented.  What does it mean?  If you are not familiar with this concept, please take a visit on [Wiki][] and Martin Fowler's [article][].  
+How to maintain documentation is a long-lasting problem in software engineering.  Hence, there raises a perspective that our written code should be self-documented.  What does it mean?  If you are not familiar with this concept, please take a visit on [Wiki][] and Martin Fowler's [article][].
 
 ## Objective
 
-This tool provides Node.js application an option to keep their API doc up to date.  
+This tool provides Node.js application an option to keep their API doc up to date.
 
-API doc serves a very important role for the communication between parties implementing the frontend and backend.  Besides better naming and reasonable url path, API query/body/param description and restriction are the most important parts.  They are also the part that is changed more often due to requirement change.  
+API doc serves a very important role for the communication between parties implementing the frontend and backend.  Besides better naming and reasonable url path, API query/body/param description and restriction are the most important parts.  They are also the part that is changed more often due to requirement change.
 
-How can we make the API docs self-documented and kept up to date?  If the API docs can be automatically updated once the code is changed, it would be fantastic.  
+How can we make the API docs self-documented and kept up to date?  If the API docs can be automatically updated once the code is changed, it would be fantastic.
 
 [joi]: https://github.com/hapijs/joi
 [Swagger]: https://swagger.io/
 
-In order to achieve this, we need a documentary approach to define our API with the support of the powerful tools [Swagger][] and [joi][].  Let's see how we achieve this in `Usage` section below.  
+In order to achieve this, we need a documentary approach to define our API with the support of the powerful tools [Swagger][] and [joi][].  Let's see how we achieve this in `Usage` section below.
 
 ## Installation
 
@@ -30,12 +32,12 @@ In order to achieve this, we need a documentary approach to define our API with 
 
 ### Route Definition
 
-A documentary approach to define route is like the sample code below.  Although this example is used in my Express.js project, it can also be applied to project using restify, hapi, etc.  
+A documentary approach to define route is like the sample code below.  Although this example is used in my Express.js project, it can also be applied to project using restify, hapi, etc.
 
-The main purpose is to use a descriptive JSON to describe what your routes look like, including its path, description, middlewares, validation criteria, sample response, etc.  
+The main purpose is to use a descriptive JSON to describe what your routes look like, including its path, description, middlewares, validation criteria, sample response, etc.
 
 ```javascript
-const joi = require('joi');
+const joi = require('joi')
 
 function dummyMiddlewareA() { }
 function dummyMiddlewareB() { }
@@ -99,9 +101,9 @@ const moduleRouteDef = {
       }
     }
   ]
-};
+}
 
-module.exports = moduleRouteDef;
+module.exports = moduleRouteDef
 ```
 
 ### Converting Route Definition to OpenAPI
@@ -109,25 +111,25 @@ module.exports = moduleRouteDef;
 Once you have defined your API routes as above, you can use this tool to convert it to OpenAPI in JSON format.
 
 ```javascript
-const convert = require('joi-route-to-swagger').convert;
-const sampleRoutes = require('./test/fixtures/mockA-routes');
+const convert = require('joi-route-to-swagger').convert
+const sampleRoutes = require('./test/fixtures/mockA-routes')
 
-const swaggerDocs = convert([sampleRoutes]);
+const swaggerDocs = convert([sampleRoutes])
 ```
 
 ## Test & Generate Sample OpenAPI
 
-Executes below test command will:  
+Executes below test command will:
 
-1. Converts all the routes definition file with `-routes.js` suffix in `test/fixtures/` folder to a OpenAPI schema JSON.  
-2. Validate the converted JSON against [OpenAPI 3.0](https://raw.githubusercontent.com/googleapis/gnostic/master/OpenAPIv3/openapi-3.0.json).  
-3. Generate the OpenAPI JSON to a file in `test/sample_api_doc.json`.  
+1. Converts all the routes definition file with `-routes.js` suffix in `test/fixtures/` folder to a OpenAPI schema JSON.
+2. Validate the converted JSON against [OpenAPI 3.0](https://raw.githubusercontent.com/googleapis/gnostic/master/OpenAPIv3/openapi-3.0.json).
+3. Generate the OpenAPI JSON to a file in `test/sample_api_doc.json`.
 
 >npm run test
 
 ## View Generated API Document
 
-Executes below command will startup a static server to host the sample OpenAPI locally:  
+Executes below command will startup a static server to host the sample OpenAPI locally:
 
 >npm run ui
 
@@ -137,11 +139,9 @@ http://localhost:8080/swagger-ui/index.html
 
 [Swagger UI]: https://swagger.io/swagger-ui/
 
-Of course, you can also download the [Swagger UI][] to host the API routes docs for yourself.  
+Of course, you can also download the [Swagger UI][] to host the API routes docs for yourself.
 
-_Notes: You may find that the UI is a bit different from what you see in https://editor.swagger.io/ .  I customized it to show enumeration and default value as well.  :)_  
-
-Enjoy.  
+Enjoy.
 
 
 ## License

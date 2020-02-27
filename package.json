@@ -1,9 +1,10 @@
 {
   "name": "joi-route-to-swagger",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "description": "Convert joi route definition to swagger doc json format (Open API v3)",
   "main": "index.js",
   "scripts": {
+    "lint": "./node_modules/.bin/eslint .",
     "test": "node ./test/index.js",
     "ui": "node ./test/ui-server.js"
   },
@@ -25,13 +26,13 @@
   },
   "homepage": "https://github.com/kenspirit/joi-route-to-swagger#readme",
   "dependencies": {
-    "joi-to-json-schema": "^3.5.0",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
     "bluebird": "^3.5.0",
+    "eslint": "^6.8.0",
     "glob": "^7.1.2",
-    "joi": "^13.5.2",
+    "joi": "^13.7.0",
     "jsonschema": "^1.2.0",
     "node-static": "^0.7.10"
   }
