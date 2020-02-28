@@ -35,7 +35,6 @@
             "in": "query"
           },
           {
-            "description": "",
             "name": "sort",
             "schema": {
               "enum": [
@@ -48,7 +47,6 @@
             "in": "query"
           },
           {
-            "description": "",
             "name": "direction",
             "schema": {
               "enum": [
@@ -61,7 +59,6 @@
             "in": "query"
           },
           {
-            "description": "",
             "name": "limit",
             "schema": {
               "multipleOf": 10,
@@ -73,7 +70,6 @@
             "in": "query"
           },
           {
-            "description": "",
             "name": "page",
             "schema": {
               "maximum": 10,
@@ -103,11 +99,9 @@
                         "totalCount",
                         "page"
                       ],
-                      "description": "",
                       "type": "object",
                       "properties": {
                         "records": {
-                          "description": "",
                           "type": "array",
                           "items": {
                             "type": "object",
@@ -148,8 +142,7 @@
                               "createdAt",
                               "nickName",
                               "gender"
-                            ],
-                            "description": ""
+                            ]
                           }
                         },
                         "totalCount": {
@@ -167,8 +160,7 @@
                   },
                   "required": [
                     "code"
-                  ],
-                  "description": ""
+                  ]
                 }
               }
             }
@@ -219,21 +211,17 @@
                     "example": "鹄思乱想"
                   },
                   "avatar": {
-                    "description": "",
                     "format": "uri",
                     "type": "string"
                   },
                   "icon": {
-                    "description": "",
                     "type": "string"
                   },
                   "email": {
-                    "description": "",
                     "format": "email",
                     "type": "string"
                   },
                   "ip": {
-                    "description": "",
                     "type": "string",
                     "oneOf": [
                       {
@@ -245,7 +233,6 @@
                     ]
                   },
                   "hostname": {
-                    "description": "",
                     "format": "hostname",
                     "type": "string"
                   },
@@ -254,20 +241,16 @@
                       "Male",
                       "Female"
                     ],
-                    "description": "",
                     "type": "string"
                   },
                   "height": {
-                    "description": "",
                     "type": "number"
                   },
                   "birthday": {
-                    "description": "",
                     "format": "date-time",
                     "type": "string"
                   },
                   "birthTime": {
-                    "description": "",
                     "type": "integer"
                   },
                   "skills": {
@@ -294,14 +277,12 @@
                               "type": "integer",
                               "example": 1
                             }
-                          },
-                          "description": ""
+                          }
                         }
                       ]
                     }
                   },
                   "retired": {
-                    "description": "",
                     "type": "boolean"
                   }
                 },
@@ -353,21 +334,17 @@
                 "type": "object",
                 "properties": {
                   "avatar": {
-                    "description": "",
                     "format": "uri",
                     "type": "string"
                   },
                   "icon": {
-                    "description": "",
                     "type": "string"
                   },
                   "email": {
-                    "description": "",
                     "format": "email",
                     "type": "string"
                   },
                   "height": {
-                    "description": "",
                     "type": "number"
                   },
                   "skills": {
@@ -394,18 +371,15 @@
                               "type": "integer",
                               "example": 1
                             }
-                          },
-                          "description": ""
+                          }
                         }
                       ]
                     }
                   },
                   "retired": {
-                    "description": "",
                     "type": "boolean"
                   },
                   "certificate": {
-                    "description": "",
                     "format": "binary",
                     "type": "string"
                   }
