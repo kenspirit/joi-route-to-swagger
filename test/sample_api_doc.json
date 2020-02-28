@@ -201,6 +201,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "description": "Hero profile",
                 "properties": {
                   "nickName": {
                     "maxLength": 20,
@@ -290,8 +291,7 @@
                   "nickName",
                   "avatar"
                 ],
-                "additionalProperties": true,
-                "description": "Hero profile"
+                "additionalProperties": true
               }
             }
           }
@@ -332,6 +332,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
+                "description": "Hero profile",
                 "properties": {
                   "avatar": {
                     "format": "uri",
@@ -387,8 +388,7 @@
                 "required": [
                   "avatar"
                 ],
-                "additionalProperties": true,
-                "description": "Hero profile"
+                "additionalProperties": true
               }
             }
           }
