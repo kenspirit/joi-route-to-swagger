@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const JoiJsonSchema = require('./lib/joi-json-schema')
+const joi2json = require('joi-to-json')
 
 const DOC_ROOT_TEMPLATE = {
   openapi: '3.0.1',
@@ -125,7 +125,7 @@ function addRouteParameters(route, validators, position) {
     return
   }
 
-  const joiJsonSchema = new JoiJsonSchema(validators[position]).jsonSchema
+  const joiJsonSchema = joi2json(validators[position])
 
   _.forEach(joiJsonSchema.properties, (schema, field) => {
     const paramObj = _convertJsonSchemaToParamObj(joiJsonSchema, field)
@@ -168,8 +168,8 @@ function _convertJsonSchemaToSwagger(jsonSchema) {
 
 function addRequestBodyParams(swaggerReq, validators) {
   if (validators && validators.body) {
-    const bodySchema = new JoiJsonSchema(validators.body)
-    const schema = _convertJsonSchemaToSwagger(bodySchema.jsonSchema)
+    const bodySchema = joi2json(validators.body)
+    const schema = _convertJsonSchemaToSwagger(bodySchema)
 
     let contentType = 'application/json'
     const anyBinaryField = _.some(schema.properties, (fieldDefn) => {
@@ -193,7 +193,7 @@ function addRequestBodyParams(swaggerReq, validators) {
 function addRequestPathParams(route, pathParams, validators) {
   let pathParamSchema
   if (validators && validators.path) {
-    pathParamSchema = new JoiJsonSchema(validators.path).jsonSchema
+    pathParamSchema = joi2json(validators.path)
   }
 
   _.forEach(pathParams, (param) => {
@@ -220,8 +220,8 @@ function addResponseExample(routeDef, route) {
       return
     }
 
-    const resSchema = new JoiJsonSchema(example.schema)
-    const schema = _convertJsonSchemaToSwagger(resSchema.jsonSchema)
+    const resSchema = joi2json(example.schema)
+    const schema = _convertJsonSchemaToSwagger(resSchema)
 
     route.responses[example.code] = {
       description: example.description || 'Normal Response',

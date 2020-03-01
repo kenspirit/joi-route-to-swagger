@@ -1,6 +1,6 @@
 # joi-route-to-swagger
 
-_[Update]: Remove the dependency of `joi-to-json-schema` but using `joi.describe` instead.  Do test before upgrade._
+_[Update]: Replace the dependency of [joi-route-to-swagger](https://github.com/kenspirit/joi-route-to-swagger) with [joi-to-json](https://github.com/kenspirit/joi-to-json).  Do test before upgrade._
 
 ## Philosophy
 
