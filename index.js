@@ -231,11 +231,12 @@ function addResponseExample(routeDef, route) {
 
     const resSchema = joi2json(example.schema)
     const schema = _convertJsonSchemaToSwagger(resSchema)
+    const mediaType = example.mediaType || 'application/json'
 
     route.responses[example.code] = {
       description: example.description || 'Normal Response',
       content: {
-        'application/json': {
+        [mediaType]: {
           schema
         }
       }
