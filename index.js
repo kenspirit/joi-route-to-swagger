@@ -54,6 +54,9 @@ const ROUTE_DEF_TEMPLATE = {
 }
 
 function _messageDescriptionWithExample(schema) {
+  if (!schema.description) {
+    schema.description = ''
+  }
   if (schema && schema.example) {
     schema.description += ` (Example: ${schema.example})`
   }
@@ -93,6 +96,9 @@ function _pickSwaggerSchemaCompatibleFields(schema) {
 
   if (!_.isEmpty(schema.examples)) {
     convertedSchema.example = schema.examples[0]
+  }
+  if (!convertedSchema.description) {
+    convertedSchema.description = ''
   }
 
   return convertedSchema
@@ -210,6 +216,9 @@ function addRequestPathParams(route, pathParams, validators) {
     }
 
     schema.in = 'path'
+    if (!schema.description) {
+      schema.description = ''
+    }
     route.parameters.push(schema)
   })
 }
