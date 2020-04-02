@@ -1,6 +1,6 @@
 {
   "name": "joi-route-to-swagger",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Convert joi route definition to swagger doc json format (Open API v3)",
   "main": "index.js",
   "scripts": {
@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/kenspirit/joi-route-to-swagger#readme",
   "dependencies": {
-    "joi-to-json": "^1.0.1",
+    "joi-to-json": "1.0.1",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
