@@ -244,7 +244,7 @@ function addResponseExample(routeDef, route) {
   })
 }
 
-function buildSwaggerRequest(docEntity, moduleId, basePath, routeDef) {
+function buildSwaggerRequest(docEntity, routeEntity, moduleId, basePath, routeDef) {
   const action = _.isArray(routeDef.action) ? routeDef.action[routeDef.action.length - 1] : routeDef.action
   const actionName = action.name
   if (!actionName) {
@@ -266,7 +266,7 @@ function buildSwaggerRequest(docEntity, moduleId, basePath, routeDef) {
   const routePath = routePaths[pathString] || {}
   routePaths[pathString] = routePath
 
-  const swaggerReq = _.cloneDeep(ROUTE_DEF_TEMPLATE)
+  const swaggerReq = _.cloneDeep(routeEntity)
   swaggerReq.tags.push(moduleId)
   swaggerReq.summary = routeDef.summary
   swaggerReq.description = routeDef.description
@@ -282,7 +282,7 @@ function buildSwaggerRequest(docEntity, moduleId, basePath, routeDef) {
   addResponseExample(routeDef, swaggerReq)
 }
 
-function buildModuleRoutes(docEntity, moduleRoutes) {
+function buildModuleRoutes(docEntity, routeEntity, moduleRoutes) {
   const moduleId = moduleRoutes.basePath.substring(1).replace(/\//g, '-')
 
   docEntity.tags.push({
@@ -291,22 +291,16 @@ function buildModuleRoutes(docEntity, moduleRoutes) {
   })
 
   moduleRoutes.routes.forEach((routeDef) => {
-    buildSwaggerRequest(docEntity, moduleId, moduleRoutes.basePath, routeDef)
+    buildSwaggerRequest(docEntity, routeEntity, moduleId, moduleRoutes.basePath, routeDef)
   })
 }
 
-function convert(allModuleRoutes, docSkeleton) {
-  const docEntity = docSkeleton || DOC_ROOT_TEMPLATE
-
-  docEntity.openapi = docEntity.openapi || DOC_ROOT_TEMPLATE.openapi
-  docEntity.info = docEntity.info || DOC_ROOT_TEMPLATE.info
-  docEntity.servers = docEntity.servers || DOC_ROOT_TEMPLATE.servers
-  docEntity.tags = docEntity.tags || DOC_ROOT_TEMPLATE.tags
-  docEntity.paths = docEntity.paths || DOC_ROOT_TEMPLATE.paths
-  docEntity.components = DOC_ROOT_TEMPLATE.components
+function convert(allModuleRoutes, docSkeleton, routeSkeleton) {
+  const docEntity = _.assign({}, DOC_ROOT_TEMPLATE, docSkeleton);
+  const routeEntity = _.assign({}, ROUTE_DEF_TEMPLATE, routeSkeleton);
 
   _.forEach(allModuleRoutes, (moduleRoutes) => {
-    buildModuleRoutes(docEntity, moduleRoutes)
+    buildModuleRoutes(docEntity,  routeEntity, moduleRoutes)
   })
 
   return docEntity
