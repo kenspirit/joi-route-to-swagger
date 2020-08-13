@@ -296,8 +296,8 @@ function buildModuleRoutes(docEntity, routeEntity, moduleRoutes) {
 }
 
 function convert(allModuleRoutes, docSkeleton, routeSkeleton) {
-  const docEntity = _.assign({}, DOC_ROOT_TEMPLATE, docSkeleton);
-  const routeEntity = _.assign({}, ROUTE_DEF_TEMPLATE, routeSkeleton);
+  const docEntity = _.assign({}, DOC_ROOT_TEMPLATE, docSkeleton)
+  const routeEntity = _.assign({}, ROUTE_DEF_TEMPLATE, routeSkeleton)
 
   _.forEach(allModuleRoutes, (moduleRoutes) => {
     buildModuleRoutes(docEntity,  routeEntity, moduleRoutes)

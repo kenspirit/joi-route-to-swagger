@@ -1,15 +1,15 @@
 {
-  "servers": [
-    {
-      "url": "http://localhost/api"
-    }
-  ],
+  "openapi": "3.0.1",
   "info": {
     "description": "Helps to CRUD hero information.",
     "version": "1.0.0",
     "title": "Hero API Docs"
   },
-  "openapi": "3.0.1",
+  "servers": [
+    {
+      "url": "http://localhost/api"
+    }
+  ],
   "tags": [
     {
       "name": "hero",
@@ -44,6 +44,7 @@
               "default": "createdAt",
               "type": "string"
             },
+            "description": "",
             "in": "query"
           },
           {
@@ -56,6 +57,7 @@
               "default": "desc",
               "type": "string"
             },
+            "description": "",
             "in": "query"
           },
           {
@@ -67,6 +69,7 @@
               "default": 100,
               "type": "integer"
             },
+            "description": "",
             "in": "query"
           },
           {
@@ -78,6 +81,7 @@
               "exclusiveMinimum": true,
               "type": "integer"
             },
+            "description": "",
             "in": "query"
           }
         ],
@@ -143,7 +147,8 @@
                               "nickName",
                               "gender"
                             ]
-                          }
+                          },
+                          "description": ""
                         },
                         "totalCount": {
                           "description": "Total number of records",
@@ -155,7 +160,8 @@
                           "type": "integer",
                           "example": 1
                         }
-                      }
+                      },
+                      "description": ""
                     }
                   },
                   "required": [
@@ -213,14 +219,17 @@
                   },
                   "avatar": {
                     "format": "uri",
-                    "type": "string"
+                    "type": "string",
+                    "description": ""
                   },
                   "icon": {
-                    "type": "string"
+                    "type": "string",
+                    "description": ""
                   },
                   "email": {
                     "format": "email",
-                    "type": "string"
+                    "type": "string",
+                    "description": ""
                   },
                   "ip": {
                     "type": "string",
@@ -231,28 +240,34 @@
                       {
                         "format": "ipv6"
                       }
-                    ]
+                    ],
+                    "description": ""
                   },
                   "hostname": {
                     "format": "hostname",
-                    "type": "string"
+                    "type": "string",
+                    "description": ""
                   },
                   "gender": {
                     "enum": [
                       "Male",
                       "Female"
                     ],
-                    "type": "string"
+                    "type": "string",
+                    "description": ""
                   },
                   "height": {
-                    "type": "number"
+                    "type": "number",
+                    "description": ""
                   },
                   "birthday": {
                     "format": "date-time",
-                    "type": "string"
+                    "type": "string",
+                    "description": ""
                   },
                   "birthTime": {
-                    "type": "integer"
+                    "type": "integer",
+                    "description": ""
                   },
                   "skills": {
                     "maxItems": 3,
@@ -284,7 +299,8 @@
                     }
                   },
                   "retired": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": ""
                   }
                 },
                 "required": [
@@ -312,7 +328,8 @@
             "schema": {
               "type": "string"
             },
-            "in": "path"
+            "in": "path",
+            "description": ""
           }
         ],
         "responses": {
@@ -336,17 +353,21 @@
                 "properties": {
                   "avatar": {
                     "format": "uri",
-                    "type": "string"
+                    "type": "string",
+                    "description": ""
                   },
                   "icon": {
-                    "type": "string"
+                    "type": "string",
+                    "description": ""
                   },
                   "email": {
                     "format": "email",
-                    "type": "string"
+                    "type": "string",
+                    "description": ""
                   },
                   "height": {
-                    "type": "number"
+                    "type": "number",
+                    "description": ""
                   },
                   "skills": {
                     "maxItems": 3,
@@ -378,11 +399,13 @@
                     }
                   },
                   "retired": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": ""
                   },
                   "certificate": {
                     "format": "binary",
-                    "type": "string"
+                    "type": "string",
+                    "description": ""
                   }
                 },
                 "required": [
