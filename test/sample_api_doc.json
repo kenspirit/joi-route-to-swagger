@@ -448,6 +448,40 @@
           }
         }
       }
+    },
+    "/hero/deprecated/{id}": {
+      "get": {
+        "tags": [
+          "hero"
+        ],
+        "summary": "Deprecated api",
+        "description": "",
+        "parameters": [
+          {
+            "description": "Hero Id (Example: 1)",
+            "name": "id",
+            "required": true,
+            "example": 1,
+            "schema": {
+              "type": "number"
+            },
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "When Server takes a nap.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true
+      }
     }
   },
   "components": {

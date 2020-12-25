@@ -110,6 +110,19 @@ const moduleRouteDef = {
           id: joi.number().required().description('Hero Id').example(1)
         })
       }
+    },
+    {
+      method: 'get',
+      path: '/deprecated/:id',
+      deprecated: true,
+      summary: 'Deprecated api',
+      description: '',
+      action: [dummyMiddlewareB],
+      validators: {
+        path: joi.object().keys({
+          id: joi.number().required().description('Hero Id').example(1)
+        })
+      }
     }
   ]
 }

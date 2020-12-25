@@ -270,6 +270,9 @@ function buildSwaggerRequest(docEntity, routeEntity, moduleId, basePath, routeDe
   swaggerReq.tags.push(moduleId)
   swaggerReq.summary = routeDef.summary
   swaggerReq.description = routeDef.description
+  if (routeDef.deprecated) {
+    swaggerReq.deprecated = routeDef.deprecated
+  }
 
   routePath[routeDef.method] = swaggerReq
 
