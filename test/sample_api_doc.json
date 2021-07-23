@@ -42,7 +42,8 @@
                 "updatedAt"
               ],
               "default": "createdAt",
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "description": "",
             "in": "query"
@@ -146,7 +147,8 @@
                               "createdAt",
                               "nickName",
                               "gender"
-                            ]
+                            ],
+                            "additionalProperties": false
                           },
                           "description": ""
                         },
@@ -161,12 +163,14 @@
                           "example": 1
                         }
                       },
+                      "additionalProperties": false,
                       "description": ""
                     }
                   },
                   "required": [
                     "code"
-                  ]
+                  ],
+                  "additionalProperties": false
                 }
               }
             }
@@ -293,7 +297,8 @@
                               "type": "integer",
                               "example": 1
                             }
-                          }
+                          },
+                          "additionalProperties": false
                         }
                       ]
                     }
@@ -393,7 +398,8 @@
                               "type": "integer",
                               "example": 1
                             }
-                          }
+                          },
+                          "additionalProperties": false
                         }
                       ]
                     }

@@ -62,6 +62,16 @@ function _messageDescriptionWithExample(schema) {
   }
 }
 
+function _convertNullTypeToNullable(schema) {
+  if (_.isArray(schema.type) && schema.type.includes('null')) {
+    _.remove(schema.type, (t) => t === 'null')
+    schema.nullable = true
+    if (schema.type.length === 1) {
+      schema.type = schema.type[0]
+    }
+  }
+}
+
 function _pickSwaggerSchemaCompatibleFields(schema) {
   const convertedSchema = _.pick(schema, [
     'title',
@@ -100,6 +110,7 @@ function _pickSwaggerSchemaCompatibleFields(schema) {
   if (!convertedSchema.description) {
     convertedSchema.description = ''
   }
+  _convertNullTypeToNullable(convertedSchema)
 
   return convertedSchema
 }
@@ -156,6 +167,7 @@ function _convertJsonSchemaToSwagger(jsonSchema) {
         })
       } else {
         fieldSchema.items = _convertJsonSchemaToSwagger(fieldSchema.items)
+        _convertNullTypeToNullable(fieldSchema.items)
       }
     }
   })
