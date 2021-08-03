@@ -256,7 +256,7 @@ function addResponseExample(routeDef, route) {
   })
 }
 
-function buildSwaggerRequest(docEntity, routeEntity, moduleId, basePath, routeDef) {
+function buildSwaggerRequest(docEntity, routeEntity, tag, basePath, routeDef) {
   const action = _.isArray(routeDef.action) ? routeDef.action[routeDef.action.length - 1] : routeDef.action
   const actionName = action.name
   if (!actionName) {
@@ -279,7 +279,7 @@ function buildSwaggerRequest(docEntity, routeEntity, moduleId, basePath, routeDe
   routePaths[pathString] = routePath
 
   const swaggerReq = _.cloneDeep(routeEntity)
-  swaggerReq.tags.push(moduleId)
+  swaggerReq.tags.push(tag)
   swaggerReq.summary = routeDef.summary
   swaggerReq.description = routeDef.description
   if (routeDef.deprecated) {
@@ -299,14 +299,15 @@ function buildSwaggerRequest(docEntity, routeEntity, moduleId, basePath, routeDe
 
 function buildModuleRoutes(docEntity, routeEntity, moduleRoutes) {
   const moduleId = moduleRoutes.basePath.substring(1).replace(/\//g, '-')
+  const tag = moduleRoutes.name || moduleId
 
   docEntity.tags.push({
-    name: moduleId,
+    name: tag,
     description: moduleRoutes.description || moduleId
   })
 
   moduleRoutes.routes.forEach((routeDef) => {
-    buildSwaggerRequest(docEntity, routeEntity, moduleId, moduleRoutes.basePath, routeDef)
+    buildSwaggerRequest(docEntity, routeEntity, tag, moduleRoutes.basePath, routeDef)
   })
 }
 
