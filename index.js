@@ -152,21 +152,21 @@ function addRouteParameters(route, validators, position) {
   })
 }
 
-function _convertJsonSchemaToSwagger(jsonSchema) {
+function jsonSchemaToSwagger(jsonSchema) {
   _.forEach(jsonSchema.properties, (fieldSchema, field) => {
     jsonSchema.properties[field] = _pickSwaggerSchemaCompatibleFields(fieldSchema)
 
     fieldSchema = jsonSchema.properties[field]
 
     if (fieldSchema.type === 'object') {
-      _convertJsonSchemaToSwagger(fieldSchema)
+      jsonSchemaToSwagger(fieldSchema)
     } else if (fieldSchema.type === 'array') {
       if (fieldSchema.items.anyOf) {
         fieldSchema.items.anyOf = _.map(fieldSchema.items.anyOf, (item) => {
-          return _convertJsonSchemaToSwagger(item)
+          return jsonSchemaToSwagger(item)
         })
       } else {
-        fieldSchema.items = _convertJsonSchemaToSwagger(fieldSchema.items)
+        fieldSchema.items = jsonSchemaToSwagger(fieldSchema.items)
         _convertNullTypeToNullable(fieldSchema.items)
       }
     }
@@ -176,7 +176,7 @@ function _convertJsonSchemaToSwagger(jsonSchema) {
   _.forEach(subSchemaFields, (field) => {
     if (!_.isEmpty(jsonSchema[field])) {
       jsonSchema[field] = _.map(jsonSchema[field], (subSchema) => {
-        return _convertJsonSchemaToSwagger(subSchema)
+        return jsonSchemaToSwagger(subSchema)
       })
     }
   })
@@ -187,7 +187,7 @@ function _convertJsonSchemaToSwagger(jsonSchema) {
 function addRequestBodyParams(swaggerReq, validators) {
   if (validators && validators.body) {
     const bodySchema = joi2json(validators.body)
-    const schema = _convertJsonSchemaToSwagger(bodySchema)
+    const schema = jsonSchemaToSwagger(bodySchema)
 
     let contentType = 'application/json'
     const anyBinaryField = _.some(schema.properties, (fieldDefn) => {
@@ -242,7 +242,7 @@ function addResponseExample(routeDef, route) {
     }
 
     const resSchema = joi2json(example.schema)
-    const schema = _convertJsonSchemaToSwagger(resSchema)
+    const schema = jsonSchemaToSwagger(resSchema)
     const mediaType = example.mediaType || 'application/json'
 
     route.responses[example.code] = {
@@ -322,4 +322,7 @@ function convert(allModuleRoutes, docSkeleton, routeSkeleton) {
   return docEntity
 }
 
-module.exports.convert = convert
+module.exports = {
+  convert,
+  jsonSchemaToSwagger
+}
