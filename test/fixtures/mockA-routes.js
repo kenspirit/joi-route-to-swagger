@@ -71,7 +71,7 @@ const moduleRouteDef = {
               level: joi.number().integer().example(1).description('Skill Level')
             })
           )).min(1).max(3).unique().description('Skills'),
-          retired: joi.boolean().truthy('yes').falsy('no').insensitive(false)
+          retired: joi.boolean().truthy('yes').falsy('no').sensitive(false)
         }).unknown(true).description('Hero profile')
       }
     },
@@ -94,7 +94,7 @@ const moduleRouteDef = {
               level: joi.number().integer().example(1).description('Skill Level')
             })
           )).min(1).max(3).unique().description('Skills'),
-          retired: joi.boolean().truthy('yes').falsy('no').insensitive(false),
+          retired: joi.boolean().truthy('yes').falsy('no').sensitive(false),
           certificate: joi.binary().encoding('base64')
         }).unknown(true).description('Hero profile')
       }

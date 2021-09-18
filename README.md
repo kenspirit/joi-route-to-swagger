@@ -1,6 +1,10 @@
 # joi-route-to-swagger
 
-_[Update]: Replace the dependency of [joi-route-to-swagger](https://github.com/kenspirit/joi-route-to-swagger) with [joi-to-json](https://github.com/kenspirit/joi-to-json).  Do test before upgrade._
+## 2.0.0 is out
+
+It's a breaking change.
+
+The dependency of [joi-to-json](https://github.com/kenspirit/joi-to-json) has been upgraded to its 2.x version.  The `jsonSchemaToSwagger` API once exported has no value as the `joi-to-json` has provided the conversion logic.
 
 ## Philosophy
 
@@ -19,14 +23,14 @@ API doc serves a very important role for the communication between parties imple
 
 How can we make the API docs self-documented and kept up to date?  If the API docs can be automatically updated once the code is changed, it would be fantastic.
 
-[joi]: https://github.com/hapijs/joi
+[joi]: https://github.com/sideway/joi
 [Swagger]: https://swagger.io/
 
 In order to achieve this, we need a documentary approach to define our API with the support of the powerful tools [Swagger][] and [joi][].  Let's see how we achieve this in `Usage` section below.
 
 ## Installation
 
->npm install joi-route-to-swagger --save-dev
+>npm install joi-route-to-swagger --save
 
 ## Usage
 

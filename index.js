@@ -62,59 +62,6 @@ function _messageDescriptionWithExample(schema) {
   }
 }
 
-function _convertNullTypeToNullable(schema) {
-  if (_.isArray(schema.type) && schema.type.includes('null')) {
-    _.remove(schema.type, (t) => t === 'null')
-    schema.nullable = true
-    if (schema.type.length === 1) {
-      schema.type = schema.type[0]
-    }
-  }
-}
-
-function _pickSwaggerSchemaCompatibleFields(schema) {
-  const convertedSchema = _.pick(schema, [
-    'title',
-    'multipleOf',
-    'maximum',
-    'exclusiveMaximum',
-    'minimum',
-    'exclusiveMinimum',
-    'maxLength',
-    'minLength',
-    'pattern',
-    'maxItems',
-    'minItems',
-    'uniqueItems',
-    'maxProperties',
-    'minProperties',
-    'required',
-    'enum',
-    'description',
-    'format',
-    'default',
-    'type',
-
-    'allOf',
-    'oneOf',
-    'anyOf',
-    'not',
-    'items',
-    'properties',
-    'additionalProperties'
-  ])
-
-  if (!_.isEmpty(schema.examples)) {
-    convertedSchema.example = schema.examples[0]
-  }
-  if (!convertedSchema.description) {
-    convertedSchema.description = ''
-  }
-  _convertNullTypeToNullable(convertedSchema)
-
-  return convertedSchema
-}
-
 function _convertJsonSchemaToParamObj(jsonSchema, fieldName) {
   const schema = jsonSchema.properties[fieldName]
 
@@ -128,9 +75,10 @@ function _convertJsonSchemaToParamObj(jsonSchema, fieldName) {
     paramObj.example = paramObj.examples[0]
     delete paramObj.examples
   }
-  paramObj.schema = _.omit(_pickSwaggerSchemaCompatibleFields(schema), [
+  paramObj.schema = _.omit(schema, [
     'description', 'example'
   ])
+  paramObj.example = schema.example
 
   _messageDescriptionWithExample(paramObj)
   return paramObj
@@ -142,7 +90,7 @@ function addRouteParameters(route, validators, position) {
     return
   }
 
-  const joiJsonSchema = joi2json(validators[position])
+  const joiJsonSchema = joi2json(validators[position], 'open-api')
 
   _.forEach(joiJsonSchema.properties, (schema, field) => {
     const paramObj = _convertJsonSchemaToParamObj(joiJsonSchema, field)
@@ -152,42 +100,9 @@ function addRouteParameters(route, validators, position) {
   })
 }
 
-function jsonSchemaToSwagger(jsonSchema) {
-  _.forEach(jsonSchema.properties, (fieldSchema, field) => {
-    jsonSchema.properties[field] = _pickSwaggerSchemaCompatibleFields(fieldSchema)
-
-    fieldSchema = jsonSchema.properties[field]
-
-    if (fieldSchema.type === 'object') {
-      jsonSchemaToSwagger(fieldSchema)
-    } else if (fieldSchema.type === 'array') {
-      if (fieldSchema.items.anyOf) {
-        fieldSchema.items.anyOf = _.map(fieldSchema.items.anyOf, (item) => {
-          return jsonSchemaToSwagger(item)
-        })
-      } else {
-        fieldSchema.items = jsonSchemaToSwagger(fieldSchema.items)
-        _convertNullTypeToNullable(fieldSchema.items)
-      }
-    }
-  })
-
-  const subSchemaFields = ['oneOf', 'allOf', 'anyOf']
-  _.forEach(subSchemaFields, (field) => {
-    if (!_.isEmpty(jsonSchema[field])) {
-      jsonSchema[field] = _.map(jsonSchema[field], (subSchema) => {
-        return jsonSchemaToSwagger(subSchema)
-      })
-    }
-  })
-
-  return jsonSchema
-}
-
 function addRequestBodyParams(swaggerReq, validators) {
   if (validators && validators.body) {
-    const bodySchema = joi2json(validators.body)
-    const schema = jsonSchemaToSwagger(bodySchema)
+    const schema = joi2json(validators.body, 'open-api')
 
     let contentType = 'application/json'
     const anyBinaryField = _.some(schema.properties, (fieldDefn) => {
@@ -211,7 +126,7 @@ function addRequestBodyParams(swaggerReq, validators) {
 function addRequestPathParams(route, pathParams, validators) {
   let pathParamSchema
   if (validators && validators.path) {
-    pathParamSchema = joi2json(validators.path)
+    pathParamSchema = joi2json(validators.path, 'open-api')
   }
 
   _.forEach(pathParams, (param) => {
@@ -241,8 +156,7 @@ function addResponseExample(routeDef, route) {
       return
     }
 
-    const resSchema = joi2json(example.schema)
-    const schema = jsonSchemaToSwagger(resSchema)
+    const schema = joi2json(example.schema, 'open-api')
     const mediaType = example.mediaType || 'application/json'
 
     route.responses[example.code] = {
@@ -323,6 +237,5 @@ function convert(allModuleRoutes, docSkeleton, routeSkeleton) {
 }
 
 module.exports = {
-  convert,
-  jsonSchemaToSwagger
+  convert
 }

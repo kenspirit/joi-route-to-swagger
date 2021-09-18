@@ -28,10 +28,10 @@
           {
             "description": "Hero ID (Example: 621)",
             "name": "heroId",
-            "example": "621",
             "schema": {
               "type": "string"
             },
+            "example": "621",
             "in": "query"
           },
           {
@@ -92,6 +92,9 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "required": [
+                    "code"
+                  ],
                   "type": "object",
                   "properties": {
                     "code": {
@@ -109,6 +112,13 @@
                         "records": {
                           "type": "array",
                           "items": {
+                            "required": [
+                              "_id",
+                              "updatedAt",
+                              "createdAt",
+                              "nickName",
+                              "gender"
+                            ],
                             "type": "object",
                             "properties": {
                               "_id": {
@@ -141,16 +151,8 @@
                                 "type": "string"
                               }
                             },
-                            "required": [
-                              "_id",
-                              "updatedAt",
-                              "createdAt",
-                              "nickName",
-                              "gender"
-                            ],
                             "additionalProperties": false
-                          },
-                          "description": ""
+                          }
                         },
                         "totalCount": {
                           "description": "Total number of records",
@@ -163,13 +165,9 @@
                           "example": 1
                         }
                       },
-                      "additionalProperties": false,
-                      "description": ""
+                      "additionalProperties": false
                     }
                   },
-                  "required": [
-                    "code"
-                  ],
                   "additionalProperties": false
                 }
               }
@@ -210,8 +208,12 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
+                "required": [
+                  "nickName",
+                  "avatar"
+                ],
                 "description": "Hero profile",
+                "type": "object",
                 "properties": {
                   "nickName": {
                     "maxLength": 20,
@@ -223,17 +225,14 @@
                   },
                   "avatar": {
                     "format": "uri",
-                    "type": "string",
-                    "description": ""
+                    "type": "string"
                   },
                   "icon": {
-                    "type": "string",
-                    "description": ""
+                    "type": "string"
                   },
                   "email": {
                     "format": "email",
-                    "type": "string",
-                    "description": ""
+                    "type": "string"
                   },
                   "ip": {
                     "type": "string",
@@ -244,34 +243,28 @@
                       {
                         "format": "ipv6"
                       }
-                    ],
-                    "description": ""
+                    ]
                   },
                   "hostname": {
                     "format": "hostname",
-                    "type": "string",
-                    "description": ""
+                    "type": "string"
                   },
                   "gender": {
                     "enum": [
                       "Male",
                       "Female"
                     ],
-                    "type": "string",
-                    "description": ""
+                    "type": "string"
                   },
                   "height": {
-                    "type": "number",
-                    "description": ""
+                    "type": "number"
                   },
                   "birthday": {
                     "format": "date-time",
-                    "type": "string",
-                    "description": ""
+                    "type": "string"
                   },
                   "birthTime": {
-                    "type": "integer",
-                    "description": ""
+                    "type": "integer"
                   },
                   "skills": {
                     "maxItems": 3,
@@ -304,14 +297,9 @@
                     }
                   },
                   "retired": {
-                    "type": "boolean",
-                    "description": ""
+                    "type": "boolean"
                   }
                 },
-                "required": [
-                  "nickName",
-                  "avatar"
-                ],
                 "additionalProperties": true
               }
             }
@@ -353,26 +341,25 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": "object",
+                "required": [
+                  "avatar"
+                ],
                 "description": "Hero profile",
+                "type": "object",
                 "properties": {
                   "avatar": {
                     "format": "uri",
-                    "type": "string",
-                    "description": ""
+                    "type": "string"
                   },
                   "icon": {
-                    "type": "string",
-                    "description": ""
+                    "type": "string"
                   },
                   "email": {
                     "format": "email",
-                    "type": "string",
-                    "description": ""
+                    "type": "string"
                   },
                   "height": {
-                    "type": "number",
-                    "description": ""
+                    "type": "number"
                   },
                   "skills": {
                     "maxItems": 3,
@@ -405,18 +392,13 @@
                     }
                   },
                   "retired": {
-                    "type": "boolean",
-                    "description": ""
+                    "type": "boolean"
                   },
                   "certificate": {
                     "format": "binary",
-                    "type": "string",
-                    "description": ""
+                    "type": "string"
                   }
                 },
-                "required": [
-                  "avatar"
-                ],
                 "additionalProperties": true
               }
             }
@@ -434,10 +416,10 @@
             "description": "Hero Id (Example: 1)",
             "name": "id",
             "required": true,
-            "example": 1,
             "schema": {
               "type": "number"
             },
+            "example": 1,
             "in": "path"
           }
         ],
@@ -467,10 +449,10 @@
             "description": "Hero Id (Example: 1)",
             "name": "id",
             "required": true,
-            "example": 1,
             "schema": {
               "type": "number"
             },
+            "example": 1,
             "in": "path"
           }
         ],

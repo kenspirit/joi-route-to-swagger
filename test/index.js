@@ -3,18 +3,13 @@ const fs = require('fs')
 const path = require('path')
 const glob = require('glob')
 const Promise = require('bluebird')
-const Validator = require('jsonschema').Validator
+const Ajv = require('ajv-draft-04')
 const convert = require('../index').convert
 
-// const swaggerSchema = require('./schemas/swagger-schema-2.0')
-const swaggerSchema = require('./schemas/openapi-3.0.json')
-const jsonSchemaDraft = require('./schemas/json-schema-draft04')
+const ajv = new Ajv()
+ajv.addMetaSchema(require('./schemas/openapi-3.0.json'))
 
 const globPromise = Promise.promisify(glob)
-
-const v = new Validator()
-v.addSchema(swaggerSchema)
-v.addSchema(jsonSchemaDraft)
 
 function buildDocsBasedOnRoutes(pathPrefix, routesPathGlob) {
   return globPromise(path.resolve(__dirname, routesPathGlob), {})
@@ -43,9 +38,9 @@ function buildDocsBasedOnRoutes(pathPrefix, routesPathGlob) {
 buildDocsBasedOnRoutes('/api', './fixtures/*-routes.js')
   .then((swagerDocJson) => {
     fs.writeFileSync('./test/sample_api_doc.json', JSON.stringify(swagerDocJson, null, 2))
-    const result = v.validate(swagerDocJson, swaggerSchema)
-    if (result.errors && result.errors.length > 0) {
-      console.log(result.errors)
+    const result = ajv.validateSchema(swagerDocJson)
+    if (!result) {
+      console.error(JSON.stringify(ajv.errors, null, 2))
     }
 
     console.log('Sample api doc is written to ./test/sample_api_doc.json successfully.')
