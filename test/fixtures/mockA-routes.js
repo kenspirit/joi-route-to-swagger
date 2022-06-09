@@ -71,8 +71,9 @@ const moduleRouteDef = {
               level: joi.number().integer().example(1).description('Skill Level')
             })
           )).min(1).max(3).unique().description('Skills'),
-          retired: joi.boolean().truthy('yes').falsy('no').sensitive(false)
-        }).unknown(true).description('Hero profile')
+          retired: joi.boolean().truthy('yes').falsy('no').sensitive(false),
+          certificate: joi.binary().encoding('base64')
+        }).unknown(true).description('Hero profile').id('Hero')
       }
     },
     {
@@ -82,21 +83,7 @@ const moduleRouteDef = {
       description: '',
       action: dummyMiddlewareB,
       validators: {
-        body: joi.object().keys({
-          avatar: joi.string().required().uri(),
-          icon: joi.string().meta({ contentMediaType: 'image/png' }),
-          email: joi.string().email(),
-          height: joi.number().precision(2),
-          skills: joi.array().items(joi.alternatives(
-            joi.string(),
-            joi.object().keys({
-              name: joi.string().example('teleport').alphanum().description('Skill Name').lowercase(),
-              level: joi.number().integer().example(1).description('Skill Level')
-            })
-          )).min(1).max(3).unique().description('Skills'),
-          retired: joi.boolean().truthy('yes').falsy('no').sensitive(false),
-          certificate: joi.binary().encoding('base64')
-        }).unknown(true).description('Hero profile')
+        body: joi.link('#Hero')
       }
     },
     {

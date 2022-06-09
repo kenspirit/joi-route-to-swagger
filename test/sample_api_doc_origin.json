@@ -28,10 +28,10 @@
           {
             "description": "Hero ID (Example: 621)",
             "name": "heroId",
-            "example": "621",
             "schema": {
               "type": "string"
             },
+            "example": "621",
             "in": "query"
           },
           {
@@ -39,7 +39,9 @@
             "schema": {
               "enum": [
                 "createdAt",
-                "updatedAt"
+                "updatedAt",
+                "",
+                null
               ],
               "default": "createdAt",
               "type": "string",
@@ -92,6 +94,9 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "required": [
+                    "code"
+                  ],
                   "type": "object",
                   "properties": {
                     "code": {
@@ -109,6 +114,13 @@
                         "records": {
                           "type": "array",
                           "items": {
+                            "required": [
+                              "_id",
+                              "updatedAt",
+                              "createdAt",
+                              "nickName",
+                              "gender"
+                            ],
                             "type": "object",
                             "properties": {
                               "_id": {
@@ -141,16 +153,8 @@
                                 "type": "string"
                               }
                             },
-                            "required": [
-                              "_id",
-                              "updatedAt",
-                              "createdAt",
-                              "nickName",
-                              "gender"
-                            ],
                             "additionalProperties": false
-                          },
-                          "description": ""
+                          }
                         },
                         "totalCount": {
                           "description": "Total number of records",
@@ -163,13 +167,9 @@
                           "example": 1
                         }
                       },
-                      "additionalProperties": false,
-                      "description": ""
+                      "additionalProperties": false
                     }
                   },
-                  "required": [
-                    "code"
-                  ],
                   "additionalProperties": false
                 }
               }
@@ -210,109 +210,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "description": "Hero profile",
-                "properties": {
-                  "nickName": {
-                    "maxLength": 20,
-                    "minLength": 3,
-                    "pattern": "^[a-z]+$",
-                    "description": "Hero Nickname",
-                    "type": "string",
-                    "example": "鹄思乱想"
-                  },
-                  "avatar": {
-                    "format": "uri",
-                    "type": "string",
-                    "description": ""
-                  },
-                  "icon": {
-                    "type": "string",
-                    "description": ""
-                  },
-                  "email": {
-                    "format": "email",
-                    "type": "string",
-                    "description": ""
-                  },
-                  "ip": {
-                    "type": "string",
-                    "oneOf": [
-                      {
-                        "format": "ipv4"
-                      },
-                      {
-                        "format": "ipv6"
-                      }
-                    ],
-                    "description": ""
-                  },
-                  "hostname": {
-                    "format": "hostname",
-                    "type": "string",
-                    "description": ""
-                  },
-                  "gender": {
-                    "enum": [
-                      "Male",
-                      "Female"
-                    ],
-                    "type": "string",
-                    "description": ""
-                  },
-                  "height": {
-                    "type": "number",
-                    "description": ""
-                  },
-                  "birthday": {
-                    "format": "date-time",
-                    "type": "string",
-                    "description": ""
-                  },
-                  "birthTime": {
-                    "type": "integer",
-                    "description": ""
-                  },
-                  "skills": {
-                    "maxItems": 3,
-                    "minItems": 1,
-                    "uniqueItems": true,
-                    "description": "Skills",
-                    "type": "array",
-                    "items": {
-                      "oneOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "name": {
-                              "description": "Skill Name",
-                              "type": "string",
-                              "example": "teleport"
-                            },
-                            "level": {
-                              "description": "Skill Level",
-                              "type": "integer",
-                              "example": 1
-                            }
-                          },
-                          "additionalProperties": false
-                        }
-                      ]
-                    }
-                  },
-                  "retired": {
-                    "type": "boolean",
-                    "description": ""
-                  }
-                },
-                "required": [
-                  "nickName",
-                  "avatar"
-                ],
-                "additionalProperties": true
+                "$ref": "#/components/schemas/Hero"
               }
             }
           }
@@ -351,73 +249,9 @@
         },
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "type": "object",
-                "description": "Hero profile",
-                "properties": {
-                  "avatar": {
-                    "format": "uri",
-                    "type": "string",
-                    "description": ""
-                  },
-                  "icon": {
-                    "type": "string",
-                    "description": ""
-                  },
-                  "email": {
-                    "format": "email",
-                    "type": "string",
-                    "description": ""
-                  },
-                  "height": {
-                    "type": "number",
-                    "description": ""
-                  },
-                  "skills": {
-                    "maxItems": 3,
-                    "minItems": 1,
-                    "uniqueItems": true,
-                    "description": "Skills",
-                    "type": "array",
-                    "items": {
-                      "oneOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "name": {
-                              "description": "Skill Name",
-                              "type": "string",
-                              "example": "teleport"
-                            },
-                            "level": {
-                              "description": "Skill Level",
-                              "type": "integer",
-                              "example": 1
-                            }
-                          },
-                          "additionalProperties": false
-                        }
-                      ]
-                    }
-                  },
-                  "retired": {
-                    "type": "boolean",
-                    "description": ""
-                  },
-                  "certificate": {
-                    "format": "binary",
-                    "type": "string",
-                    "description": ""
-                  }
-                },
-                "required": [
-                  "avatar"
-                ],
-                "additionalProperties": true
+                "$ref": "#/components/schemas/Hero"
               }
             }
           }
@@ -434,10 +268,10 @@
             "description": "Hero Id (Example: 1)",
             "name": "id",
             "required": true,
-            "example": 1,
             "schema": {
               "type": "number"
             },
+            "example": 1,
             "in": "path"
           }
         ],
@@ -467,10 +301,10 @@
             "description": "Hero Id (Example: 1)",
             "name": "id",
             "required": true,
-            "example": 1,
             "schema": {
               "type": "number"
             },
+            "example": 1,
             "in": "path"
           }
         ],
@@ -506,6 +340,102 @@
             "type": "string"
           }
         }
+      },
+      "Hero": {
+        "type": "object",
+        "description": "Hero profile",
+        "properties": {
+          "nickName": {
+            "maxLength": 20,
+            "minLength": 3,
+            "pattern": "^[a-z]+$",
+            "description": "Hero Nickname",
+            "type": "string",
+            "example": "鹄思乱想"
+          },
+          "avatar": {
+            "format": "uri",
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "email": {
+            "format": "email",
+            "type": "string"
+          },
+          "ip": {
+            "type": "string",
+            "oneOf": [
+              {
+                "format": "ipv4"
+              },
+              {
+                "format": "ipv6"
+              }
+            ]
+          },
+          "hostname": {
+            "format": "hostname",
+            "type": "string"
+          },
+          "gender": {
+            "enum": [
+              "Male",
+              "Female",
+              ""
+            ],
+            "type": "string"
+          },
+          "height": {
+            "type": "number"
+          },
+          "birthday": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "birthTime": {
+            "type": "integer"
+          },
+          "skills": {
+            "maxItems": 3,
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "Skills",
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "description": "Skill Name",
+                      "type": "string",
+                      "example": "teleport"
+                    },
+                    "level": {
+                      "description": "Skill Level",
+                      "type": "integer",
+                      "example": 1
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "retired": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "nickName",
+          "avatar"
+        ],
+        "additionalProperties": true
       }
     }
   }

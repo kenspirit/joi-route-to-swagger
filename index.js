@@ -84,13 +84,14 @@ function _convertJsonSchemaToParamObj(jsonSchema, fieldName) {
   return paramObj
 }
 
-function addRouteParameters(route, validators, position) {
+function addRouteParameters(sharedSchemas, route, validators, position) {
   const validator = validators ? validators[position] : null
   if (!validator) {
     return
   }
 
-  const joiJsonSchema = joi2json(validators[position], 'open-api')
+  const joiJsonSchema = joi2json(validators[position], 'open-api', sharedSchemas)
+  delete joiJsonSchema.schemas
 
   _.forEach(joiJsonSchema.properties, (schema, field) => {
     const paramObj = _convertJsonSchemaToParamObj(joiJsonSchema, field)
@@ -100,14 +101,21 @@ function addRouteParameters(route, validators, position) {
   })
 }
 
-function addRequestBodyParams(swaggerReq, validators) {
+function addRequestBodyParams(sharedSchemas, swaggerReq, validators) {
   if (validators && validators.body) {
-    const schema = joi2json(validators.body, 'open-api')
+    const schema = joi2json(validators.body, 'open-api', sharedSchemas)
+    delete schema.schemas
 
     let contentType = 'application/json'
-    const anyBinaryField = _.some(schema.properties, (fieldDefn) => {
+    let anyBinaryField = _.some(schema.properties, (fieldDefn) => {
       return fieldDefn.format === 'binary'
     })
+    if (schema.$ref) {
+      const sharedSchemaName = schema.$ref.replace('#/components/schemas/', '')
+      anyBinaryField = _.some(sharedSchemas[sharedSchemaName].properties, (fieldDefn) => {
+        return fieldDefn.format === 'binary'
+      })
+    }
 
     if (anyBinaryField) {
       contentType = 'multipart/form-data'
@@ -123,10 +131,11 @@ function addRequestBodyParams(swaggerReq, validators) {
   }
 }
 
-function addRequestPathParams(route, pathParams, validators) {
+function addRequestPathParams(sharedSchemas, route, pathParams, validators) {
   let pathParamSchema
   if (validators && validators.path) {
-    pathParamSchema = joi2json(validators.path, 'open-api')
+    pathParamSchema = joi2json(validators.path, 'open-api', sharedSchemas)
+    delete pathParamSchema.schemas
   }
 
   _.forEach(pathParams, (param) => {
@@ -150,13 +159,14 @@ function addRequestPathParams(route, pathParams, validators) {
   })
 }
 
-function addResponseExample(routeDef, route) {
+function addResponseExample(sharedSchemas, routeDef, route) {
   _.forEach(routeDef.responseExamples, (example) => {
     if (!example.schema) {
       return
     }
 
-    const schema = joi2json(example.schema, 'open-api')
+    const schema = joi2json(example.schema, 'open-api', sharedSchemas)
+    delete schema.schemas
     const mediaType = example.mediaType || 'application/json'
 
     route.responses[example.code] = {
@@ -203,12 +213,14 @@ function buildSwaggerRequest(docEntity, routeEntity, tag, basePath, routeDef) {
   routePath[routeDef.method] = swaggerReq
 
   const validators = routeDef.validators
-  addRequestPathParams(swaggerReq, pathParams, validators)
-  addRouteParameters(swaggerReq, validators, 'query')
-  addRouteParameters(swaggerReq, validators, 'header')
-  addRequestBodyParams(swaggerReq, validators)
+  const sharedSchemas = docEntity.components.schemas
 
-  addResponseExample(routeDef, swaggerReq)
+  addRequestPathParams(sharedSchemas, swaggerReq, pathParams, validators)
+  addRouteParameters(sharedSchemas, swaggerReq, validators, 'query')
+  addRouteParameters(sharedSchemas, swaggerReq, validators, 'header')
+  addRequestBodyParams(sharedSchemas, swaggerReq, validators)
+
+  addResponseExample(sharedSchemas, routeDef, swaggerReq)
 }
 
 function buildModuleRoutes(docEntity, routeEntity, moduleRoutes) {
