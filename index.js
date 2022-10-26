@@ -101,23 +101,30 @@ function addRouteParameters(sharedSchemas, route, validators, position) {
   })
 }
 
+function containsBinaryField(schema, sharedSchemas) {
+  let anyBinaryField = _.some(schema.properties, (fieldDefn) => {
+    if (fieldDefn.type === 'array') {
+      return fieldDefn.items.format === 'binary'
+    }
+    return fieldDefn.format === 'binary'
+  })
+
+  if (!anyBinaryField && schema.$ref) {
+    const sharedSchemaName = schema.$ref.replace('#/components/schemas/', '')
+    anyBinaryField = containsBinaryField(sharedSchemas[sharedSchemaName])
+  }
+
+  return anyBinaryField
+}
+
 function addRequestBodyParams(sharedSchemas, swaggerReq, validators) {
   if (validators && validators.body) {
     const schema = joi2json(validators.body, 'open-api', sharedSchemas)
     delete schema.schemas
 
     let contentType = 'application/json'
-    let anyBinaryField = _.some(schema.properties, (fieldDefn) => {
-      return fieldDefn.format === 'binary'
-    })
-    if (schema.$ref) {
-      const sharedSchemaName = schema.$ref.replace('#/components/schemas/', '')
-      anyBinaryField = _.some(sharedSchemas[sharedSchemaName].properties, (fieldDefn) => {
-        return fieldDefn.format === 'binary'
-      })
-    }
 
-    if (anyBinaryField) {
+    if (containsBinaryField(schema, sharedSchemas)) {
       contentType = 'multipart/form-data'
     }
 

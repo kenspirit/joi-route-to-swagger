@@ -433,6 +433,14 @@
           "certificate": {
             "format": "binary",
             "type": "string"
+          },
+          "rewards": {
+            "type": "array",
+            "items": {
+              "description": "Rewards",
+              "format": "binary",
+              "type": "string"
+            }
           }
         },
         "required": [

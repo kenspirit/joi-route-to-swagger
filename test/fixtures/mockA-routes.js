@@ -72,7 +72,8 @@ const moduleRouteDef = {
             })
           )).min(1).max(3).unique().description('Skills'),
           retired: joi.boolean().truthy('yes').falsy('no').sensitive(false),
-          certificate: joi.binary().encoding('base64')
+          certificate: joi.binary().encoding('base64'),
+          rewards: joi.array().items(joi.binary().description('Rewards'))
         }).unknown(true).description('Hero profile').id('Hero')
       }
     },
