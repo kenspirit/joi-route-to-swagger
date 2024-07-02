@@ -37,14 +37,14 @@
           {
             "name": "sort",
             "schema": {
+              "type": "string",
+              "default": "createdAt",
               "enum": [
                 "createdAt",
                 "updatedAt",
                 "",
                 null
               ],
-              "default": "createdAt",
-              "type": "string",
               "nullable": true
             },
             "description": "",
@@ -53,12 +53,12 @@
           {
             "name": "direction",
             "schema": {
+              "type": "string",
+              "default": "desc",
               "enum": [
                 "desc",
                 "asc"
-              ],
-              "default": "desc",
-              "type": "string"
+              ]
             },
             "description": "",
             "in": "query"
@@ -66,11 +66,11 @@
           {
             "name": "limit",
             "schema": {
-              "multipleOf": 10,
-              "maximum": 100,
-              "minimum": 1,
+              "type": "integer",
               "default": 100,
-              "type": "integer"
+              "minimum": 1,
+              "maximum": 100,
+              "multipleOf": 10
             },
             "description": "",
             "in": "query"
@@ -78,11 +78,11 @@
           {
             "name": "page",
             "schema": {
-              "maximum": 10,
-              "exclusiveMaximum": true,
-              "minimum": 0,
+              "type": "integer",
               "exclusiveMinimum": true,
-              "type": "integer"
+              "minimum": 0,
+              "exclusiveMaximum": true,
+              "maximum": 10
             },
             "description": "",
             "in": "query"
@@ -94,26 +94,51 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "required": [
-                    "code"
-                  ],
                   "type": "object",
                   "properties": {
                     "code": {
-                      "description": "Status Code",
                       "type": "string",
+                      "description": "Status Code",
                       "example": "10000000"
                     },
                     "data": {
-                      "required": [
-                        "totalCount",
-                        "page"
-                      ],
                       "type": "object",
                       "properties": {
                         "records": {
                           "type": "array",
                           "items": {
+                            "type": "object",
+                            "properties": {
+                              "_id": {
+                                "type": "string",
+                                "description": "Unique id of hero",
+                                "example": "59ba1f3c2e9787247e29da9b"
+                              },
+                              "updatedAt": {
+                                "type": "string",
+                                "description": "Data creation time",
+                                "example": "2017-09-14T06:18:36.786Z"
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "description": "Data last update time",
+                                "example": "2017-09-14T06:18:36.786Z"
+                              },
+                              "nickName": {
+                                "type": "string",
+                                "description": "Nick name",
+                                "example": "Ken"
+                              },
+                              "gender": {
+                                "type": "string",
+                                "description": "Gender",
+                                "example": "Male"
+                              },
+                              "avatar": {
+                                "type": "string",
+                                "description": "Hero avatar"
+                              }
+                            },
                             "required": [
                               "_id",
                               "updatedAt",
@@ -121,55 +146,30 @@
                               "nickName",
                               "gender"
                             ],
-                            "type": "object",
-                            "properties": {
-                              "_id": {
-                                "description": "Unique id of hero",
-                                "type": "string",
-                                "example": "59ba1f3c2e9787247e29da9b"
-                              },
-                              "updatedAt": {
-                                "description": "Data creation time",
-                                "type": "string",
-                                "example": "2017-09-14T06:18:36.786Z"
-                              },
-                              "createdAt": {
-                                "description": "Data last update time",
-                                "type": "string",
-                                "example": "2017-09-14T06:18:36.786Z"
-                              },
-                              "nickName": {
-                                "description": "Nick name",
-                                "type": "string",
-                                "example": "Ken"
-                              },
-                              "gender": {
-                                "description": "Gender",
-                                "type": "string",
-                                "example": "Male"
-                              },
-                              "avatar": {
-                                "description": "Hero avatar",
-                                "type": "string"
-                              }
-                            },
                             "additionalProperties": false
                           }
                         },
                         "totalCount": {
-                          "description": "Total number of records",
                           "type": "integer",
+                          "description": "Total number of records",
                           "example": 2
                         },
                         "page": {
-                          "description": "Page Number",
                           "type": "integer",
+                          "description": "Page Number",
                           "example": 1
                         }
                       },
+                      "required": [
+                        "totalCount",
+                        "page"
+                      ],
                       "additionalProperties": false
                     }
                   },
+                  "required": [
+                    "code"
+                  ],
                   "additionalProperties": false
                 }
               }
@@ -346,23 +346,23 @@
         "description": "Hero profile",
         "properties": {
           "nickName": {
-            "maxLength": 20,
-            "minLength": 3,
-            "pattern": "^[a-z]+$",
-            "description": "Hero Nickname",
             "type": "string",
-            "example": "鹄思乱想"
+            "description": "Hero Nickname",
+            "example": "鹄思乱想",
+            "minLength": 3,
+            "maxLength": 20,
+            "pattern": "^[a-z]+$"
           },
           "avatar": {
-            "format": "uri",
-            "type": "string"
+            "type": "string",
+            "format": "uri"
           },
           "icon": {
             "type": "string"
           },
           "email": {
-            "format": "email",
-            "type": "string"
+            "type": "string",
+            "format": "email"
           },
           "ip": {
             "type": "string",
@@ -376,35 +376,35 @@
             ]
           },
           "hostname": {
-            "format": "hostname",
-            "type": "string"
+            "type": "string",
+            "format": "hostname"
           },
           "gender": {
+            "type": "string",
             "enum": [
               "Male",
               "Female",
               ""
-            ],
-            "type": "string"
+            ]
           },
           "height": {
             "type": "number"
           },
           "birthday": {
-            "format": "date-time",
-            "type": "string"
+            "type": "string",
+            "format": "date-time"
           },
           "birthTime": {
             "type": "integer"
           },
           "skills": {
-            "maxItems": 3,
-            "minItems": 1,
-            "uniqueItems": true,
-            "description": "Skills",
             "type": "array",
+            "description": "Skills",
+            "minItems": 1,
+            "maxItems": 3,
+            "uniqueItems": true,
             "items": {
-              "oneOf": [
+              "anyOf": [
                 {
                   "type": "string"
                 },
@@ -412,13 +412,13 @@
                   "type": "object",
                   "properties": {
                     "name": {
-                      "description": "Skill Name",
                       "type": "string",
+                      "description": "Skill Name",
                       "example": "teleport"
                     },
                     "level": {
-                      "description": "Skill Level",
                       "type": "integer",
+                      "description": "Skill Level",
                       "example": 1
                     }
                   },
@@ -431,15 +431,15 @@
             "type": "boolean"
           },
           "certificate": {
-            "format": "binary",
-            "type": "string"
+            "type": "string",
+            "format": "binary"
           },
           "rewards": {
             "type": "array",
             "items": {
+              "type": "string",
               "description": "Rewards",
-              "format": "binary",
-              "type": "string"
+              "format": "binary"
             }
           }
         },

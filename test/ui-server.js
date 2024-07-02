@@ -1,11 +1,9 @@
-const staticServer = require('node-static')
-
-const file = new staticServer.Server('./test', { cache: false })
+const parseUrl = require('parseurl')
+const send = require('@fastify/send')
 
 require('http').createServer((request, response) => {
-  request.addListener('end', () => {
-    file.serve(request, response)
-  }).resume()
+  send(request, parseUrl(request).pathname, { root: './test' })
+    .pipe(response)
 }).listen(8080).on('listening', () => {
   console.log('Swagger Doc url: http://localhost:8080/swagger-ui/index.html')
 })
