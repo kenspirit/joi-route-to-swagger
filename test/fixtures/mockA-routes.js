@@ -18,7 +18,7 @@ const moduleRouteDef = {
       action: dummyMiddlewareA,
       validators: {
         query: joi.object().keys({
-          heroId: joi.string().example('621').description('Hero ID'),
+          heroId: joi.string().example('621').description('Hero ID').invalid(null, ''),
           sort: joi.string().valid('createdAt', 'updatedAt').allow('', null).default('createdAt'),
           direction: joi.string().valid('desc', 'asc').default('desc'),
           limit: joi.number().integer().min(1).max(100).default(100).multiple(10),

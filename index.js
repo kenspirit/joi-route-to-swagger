@@ -84,13 +84,13 @@ function _convertJsonSchemaToParamObj(jsonSchema, fieldName) {
   return paramObj
 }
 
-function addRouteParameters(sharedSchemas, route, validators, position) {
+function addRouteParameters(sharedSchemas, route, validators, position, outputType) {
   const validator = validators ? validators[position] : null
   if (!validator) {
     return
   }
 
-  const joiJsonSchema = joi2json(validators[position], 'open-api', sharedSchemas)
+  const joiJsonSchema = joi2json(validators[position], outputType, sharedSchemas)
   delete joiJsonSchema.schemas
 
   _.forEach(joiJsonSchema.properties, (schema, field) => {
@@ -117,9 +117,9 @@ function containsBinaryField(schema, sharedSchemas) {
   return anyBinaryField
 }
 
-function addRequestBodyParams(sharedSchemas, swaggerReq, validators) {
+function addRequestBodyParams(sharedSchemas, swaggerReq, validators, outputType) {
   if (validators && validators.body) {
-    const schema = joi2json(validators.body, 'open-api', sharedSchemas)
+    const schema = joi2json(validators.body, outputType, sharedSchemas)
     delete schema.schemas
 
     let contentType = 'application/json'
@@ -138,10 +138,10 @@ function addRequestBodyParams(sharedSchemas, swaggerReq, validators) {
   }
 }
 
-function addRequestPathParams(sharedSchemas, route, pathParams, validators) {
+function addRequestPathParams(sharedSchemas, route, pathParams, validators, outputType) {
   let pathParamSchema
   if (validators && validators.path) {
-    pathParamSchema = joi2json(validators.path, 'open-api', sharedSchemas)
+    pathParamSchema = joi2json(validators.path, outputType, sharedSchemas)
     delete pathParamSchema.schemas
   }
 
@@ -166,13 +166,13 @@ function addRequestPathParams(sharedSchemas, route, pathParams, validators) {
   })
 }
 
-function addResponseExample(sharedSchemas, routeDef, route) {
+function addResponseExample(sharedSchemas, routeDef, route, outputType) {
   _.forEach(routeDef.responseExamples, (example) => {
     if (!example.schema) {
       return
     }
 
-    const schema = joi2json(example.schema, 'open-api', sharedSchemas)
+    const schema = joi2json(example.schema, outputType, sharedSchemas)
     delete schema.schemas
     const mediaType = example.mediaType || 'application/json'
 
@@ -187,7 +187,7 @@ function addResponseExample(sharedSchemas, routeDef, route) {
   })
 }
 
-function buildSwaggerRequest(docEntity, routeEntity, tag, basePath, routeDef) {
+function buildSwaggerRequest(docEntity, routeEntity, tag, basePath, routeDef, outputType) {
   const action = _.isArray(routeDef.action) ? routeDef.action[routeDef.action.length - 1] : routeDef.action
   const actionName = action.name
   if (!actionName) {
@@ -223,14 +223,14 @@ function buildSwaggerRequest(docEntity, routeEntity, tag, basePath, routeDef) {
   const sharedSchemas = docEntity.components.schemas
 
   addRequestPathParams(sharedSchemas, swaggerReq, pathParams, validators)
-  addRouteParameters(sharedSchemas, swaggerReq, validators, 'query')
-  addRouteParameters(sharedSchemas, swaggerReq, validators, 'header')
-  addRequestBodyParams(sharedSchemas, swaggerReq, validators)
+  addRouteParameters(sharedSchemas, swaggerReq, validators, 'query', outputType)
+  addRouteParameters(sharedSchemas, swaggerReq, validators, 'header', outputType)
+  addRequestBodyParams(sharedSchemas, swaggerReq, validators, outputType)
 
-  addResponseExample(sharedSchemas, routeDef, swaggerReq)
+  addResponseExample(sharedSchemas, routeDef, swaggerReq, outputType)
 }
 
-function buildModuleRoutes(docEntity, routeEntity, moduleRoutes) {
+function buildModuleRoutes(docEntity, routeEntity, moduleRoutes, outputType) {
   const moduleId = moduleRoutes.basePath.substring(1).replace(/\//g, '-')
   const tag = moduleRoutes.name || moduleId
 
@@ -240,16 +240,16 @@ function buildModuleRoutes(docEntity, routeEntity, moduleRoutes) {
   })
 
   moduleRoutes.routes.forEach((routeDef) => {
-    buildSwaggerRequest(docEntity, routeEntity, tag, moduleRoutes.basePath, routeDef)
+    buildSwaggerRequest(docEntity, routeEntity, tag, moduleRoutes.basePath, routeDef, outputType)
   })
 }
 
-function convert(allModuleRoutes, docSkeleton, routeSkeleton) {
+function convert(allModuleRoutes, docSkeleton, routeSkeleton, outputType = 'open-api') {
   const docEntity = _.assign({}, DOC_ROOT_TEMPLATE, docSkeleton)
   const routeEntity = _.assign({}, ROUTE_DEF_TEMPLATE, routeSkeleton)
 
   _.forEach(allModuleRoutes, (moduleRoutes) => {
-    buildModuleRoutes(docEntity,  routeEntity, moduleRoutes)
+    buildModuleRoutes(docEntity,  routeEntity, moduleRoutes, outputType)
   })
 
   return docEntity

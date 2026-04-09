@@ -29,7 +29,13 @@
             "description": "Hero ID (Example: 621)",
             "name": "heroId",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "not": {
+                "enum": [
+                  null,
+                  ""
+                ]
+              }
             },
             "example": "621",
             "in": "query"
@@ -265,13 +271,15 @@
         "description": "",
         "parameters": [
           {
-            "description": "Hero Id (Example: 1)",
+            "description": "Hero Id",
             "name": "id",
             "required": true,
             "schema": {
-              "type": "number"
+              "type": "number",
+              "examples": [
+                1
+              ]
             },
-            "example": 1,
             "in": "path"
           }
         ],
@@ -298,13 +306,15 @@
         "description": "",
         "parameters": [
           {
-            "description": "Hero Id (Example: 1)",
+            "description": "Hero Id",
             "name": "id",
             "required": true,
             "schema": {
-              "type": "number"
+              "type": "number",
+              "examples": [
+                1
+              ]
             },
-            "example": 1,
             "in": "path"
           }
         ],

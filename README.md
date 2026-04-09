@@ -1,11 +1,5 @@
 # joi-route-to-swagger
 
-## 2.0.0 is out
-
-It's a breaking change.
-
-The dependency of [joi-to-json](https://github.com/kenspirit/joi-to-json) has been upgraded to its 2.x version.  The `jsonSchemaToSwagger` API once exported has no value as the `joi-to-json` has provided the conversion logic.
-
 ## Philosophy
 
 Most programmers are not so willing to write documentations.  Also, the fact is that documentation is easily rotted as time goes by with changing requirement.
@@ -33,6 +27,13 @@ In order to achieve this, we need a documentary approach to define our API with 
 >npm install joi-route-to-swagger --save
 
 ## Usage
+
+### Parameters of `convert` api
+- allModuleRoutes: Route definition of your project.
+- docSkeleton: JSON Skeleton for building open api doc.  If not passed, default template is used.
+- routeSkeleton: JSON Skeleton for building each route in open api.  If not passed, default template is used.
+- outputType: `open-api` or `open-api-3.1`.  Passed to `joi-to-json` directly.  Default to be `open-api`
+
 
 ### Route Definition
 
