@@ -1,6 +1,6 @@
 {
   "name": "joi-route-to-swagger",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "Convert joi route definition to swagger doc json format (Open API v3)",
   "main": "index.js",
   "scripts": {

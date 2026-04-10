@@ -57,28 +57,36 @@ function _messageDescriptionWithExample(schema) {
   if (!schema.description) {
     schema.description = ''
   }
-  if (schema && schema.example) {
-    schema.description += ` (Example: ${schema.example})`
+  if (schema && (schema.example || (schema.examples && schema.examples.length > 0))) {
+    schema.description += ` (Example: ${schema.example || schema.examples[0]})`
   }
 }
 
-function _convertJsonSchemaToParamObj(jsonSchema, fieldName) {
+function _convertJsonSchemaToParamObj(jsonSchema, fieldName, outputType) {
+  // For OpenAPI 3.0, example is used, while for OpenAPI 3.1, examples is used. So we need to check both and convert to the correct one.
   const schema = jsonSchema.properties[fieldName]
 
-  const paramObj = _.pick(schema, ['description', 'examples'])
+  const paramObj = _.pick(schema, ['description', 'examples', 'example'])
   paramObj.name = fieldName
 
   if (jsonSchema.required && jsonSchema.required.includes(fieldName)) {
     paramObj.required = true
   }
   if (!_.isEmpty(paramObj.examples)) {
-    paramObj.example = paramObj.examples[0]
-    delete paramObj.examples
+    if (outputType !== 'open-api-3.1') {
+      paramObj.example = paramObj.examples[0]
+      delete paramObj.examples
+    }
+  } else if (paramObj.example) {
+    if (outputType === 'open-api-3.1') {
+      paramObj.examples = [paramObj.example]
+      delete paramObj.example
+    }
   }
+
   paramObj.schema = _.omit(schema, [
-    'description', 'example'
+    'description', 'example', 'examples'
   ])
-  paramObj.example = schema.example
 
   _messageDescriptionWithExample(paramObj)
   return paramObj
@@ -94,7 +102,7 @@ function addRouteParameters(sharedSchemas, route, validators, position, outputTy
   delete joiJsonSchema.schemas
 
   _.forEach(joiJsonSchema.properties, (schema, field) => {
-    const paramObj = _convertJsonSchemaToParamObj(joiJsonSchema, field)
+    const paramObj = _convertJsonSchemaToParamObj(joiJsonSchema, field, outputType)
 
     paramObj.in = position
     route.parameters.push(paramObj)
@@ -155,7 +163,7 @@ function addRequestPathParams(sharedSchemas, route, pathParams, validators, outp
     }
 
     if (pathParamSchema) {
-      schema = _convertJsonSchemaToParamObj(pathParamSchema, param)
+      schema = _convertJsonSchemaToParamObj(pathParamSchema, param, outputType)
     }
 
     schema.in = 'path'
@@ -222,7 +230,7 @@ function buildSwaggerRequest(docEntity, routeEntity, tag, basePath, routeDef, ou
   const validators = routeDef.validators
   const sharedSchemas = docEntity.components.schemas
 
-  addRequestPathParams(sharedSchemas, swaggerReq, pathParams, validators)
+  addRequestPathParams(sharedSchemas, swaggerReq, pathParams, validators, outputType)
   addRouteParameters(sharedSchemas, swaggerReq, validators, 'query', outputType)
   addRouteParameters(sharedSchemas, swaggerReq, validators, 'header', outputType)
   addRequestBodyParams(sharedSchemas, swaggerReq, validators, outputType)
